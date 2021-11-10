@@ -15,4 +15,16 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Test","commmit3");
 
     }
+
+    public void apiCall() {
+
+    }
+
+    public void sockCall() {
+
+    }
+
+    public void jsonCall() {
+
+    }
 }
