@@ -6,6 +6,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,9 +50,12 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+
                 if(response.isSuccessful()){
                     List<Post> date = response.body();
                 }
+
+
             }
 
 
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callList2(){
-        Call<List<Post>> call = liftApi.UpdateElevator("data");
+        Call<List<Post>> call = liftApi.UpdateElevator("date");
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -101,12 +105,13 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
-                Post result = response.body();
-
-                //name.setText(result.title);
-                //
+                if (response.isSuccessful()){
+                    List<Post> date = (List<Post>) response.body();
+                    //textViewResult.setText(response.body().bodyPost)
+                    //bodyValue
+                    //sendList 0 ,1 ,2  ui쪽으로 넘기기
+                }
             }
-
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
                 t.printStackTrace();
@@ -120,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
-
+                if (response.isSuccessful()){
+                    List<Post> date = (List<Post>) response.body();
+                }
             }
 
             @Override
@@ -135,19 +142,15 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
-
-
+                if (response.isSuccessful()){
+                    List<Post> date = (List<Post>) response.body();
+                }
             }
-
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
-
             }
         });
-
     }
-
-
 
     public void apiCall() {
 

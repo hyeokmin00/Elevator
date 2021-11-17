@@ -7,14 +7,8 @@ public class ErrorPost {
     private String lift_status;
     private String lift_error;
 
-    @SerializedName("lift_id")
-    private int getlift_id;
-
-    @SerializedName("lift_status")
-    private String getLift_status;
-
-    @SerializedName("lift_error")
-    private String getLift_error;
+    @SerializedName("body")
+    private String bodyValue;
 
     public ErrorPost(int lift_id, String lift_status, String lift_error){
         this.lift_id = lift_id;

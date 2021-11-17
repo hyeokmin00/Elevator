@@ -50,4 +50,6 @@ public class Post {
     public void setLift_address(String lift_address) {
         this.lift_address = lift_address;
     }
+
+
 }
