@@ -30,7 +30,7 @@ public class ConnectionMgr extends AppCompatActivity {
     private ConnectivityManager.NetworkCallback networkCallback;
 
 
-    void enableWifi() {
+    void enableWifi(String ssidPattern, String password) {
 
         OnCheckPermission();
         checkSystemPermission();
@@ -46,8 +46,8 @@ public class ConnectionMgr extends AppCompatActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                 WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
-                builder.setSsidPattern(new PatternMatcher("CarKey",PatternMatcher.PATTERN_PREFIX));
-                builder.setWpa2Passphrase("1234qqqq");
+                builder.setSsidPattern(new PatternMatcher(ssidPattern,PatternMatcher.PATTERN_PREFIX));
+                builder.setWpa2Passphrase(password);
 
                 WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
 
