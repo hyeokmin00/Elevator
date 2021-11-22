@@ -30,7 +30,11 @@ public class ConnectionMgr extends AppCompatActivity {
     private ConnectivityManager.NetworkCallback networkCallback;
 
 
-    void connectWifi() {
+    void enableWifi() {
+
+        OnCheckPermission();
+        checkSystemPermission();
+
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -80,7 +84,7 @@ public class ConnectionMgr extends AppCompatActivity {
         }
 
     }
-    void Disconnect() {
+    void disableWifi() {
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
