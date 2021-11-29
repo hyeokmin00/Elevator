@@ -1,14 +1,22 @@
 package com.example.elevator;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ErrorPost {
-    private int lift_id;
-    private String lift_status;
-    private String lift_error;
 
-    @SerializedName("body")
-    private String bodyValue;
+
+    @SerializedName("lift_id")
+    @Expose
+    private int lift_id;
+
+    @SerializedName("lift_status")
+    @Expose
+    private  String lift_status;
+
+    @SerializedName("lift_error")
+    @Expose
+    private String lift_error;
 
     public ErrorPost(int lift_id, String lift_status, String lift_error){
         this.lift_id = lift_id;
@@ -16,9 +24,7 @@ public class ErrorPost {
         this.lift_error = lift_error;
     }
 
-    public int getLift_id(){
-        return lift_id;
-    }
+    public int getLift_id(){return lift_id;}
 
     public String getLift_status(){
         return lift_status;
