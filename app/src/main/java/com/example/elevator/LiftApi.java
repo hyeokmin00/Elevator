@@ -23,11 +23,11 @@ public interface LiftApi {
             @Field("lift_status") String lift_status,
             @Field("lift_address") String lift_address);
 
-    @GET("liftdetail/:lift_id/") // 2
-    Call<List<Post>> getElevatorSelectList(@Query("lift_id") int lift_id);
+    @GET("liftdetail/") // 2
+    Call<List<Post>> getElevatorSelectList(@Query(":lift_id/") int lift_id);
 
-    @GET("afterdate/:date") // 6
-    Call<List<Post>> UpdateElevator (@Query("date") String date);
+    @GET("afterdate/") // 6
+    Call<List<Post>> UpdateElevator (@Query(":date") String date);
 
     @POST("posterr/") // 9
     Call<List<ErrorPost>> ErrorPost(
@@ -35,7 +35,6 @@ public interface LiftApi {
             @Field("lift_status") String lift_status,
             @Field("lift_error") String lift_error);
 
-    @FormUrlEncoded
     @POST("postrepo/") // 12
     Call<List<Checkinglist>> Checkinglist(
             @Field("life_id") int life_id,
