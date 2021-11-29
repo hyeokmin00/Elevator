@@ -3,6 +3,7 @@ package com.example.elevator.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.example.elevator.ui.SharedExample;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView list;
-
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +33,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         list = (ListView)findViewById(R.id.list);
 
         List<String> data = new ArrayList<>();
+        /* data.add("엘레베이터 1");
+        data.add("엘레베이터 2");
+        data.add("엘레베이터 3"); */
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
 
         list.setAdapter(adapter);
 
-        data.add("엘레베이터 1");
-        data.add("엘레베이터 2");
-        data.add("엘레베이터 3");
+       // ((MainActivity) mContext).open메서드();
+
+
+
 
 
         adapter.notifyDataSetChanged();

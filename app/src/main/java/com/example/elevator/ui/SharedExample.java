@@ -25,6 +25,13 @@ public class SharedExample extends AppCompatActivity {
         String value = sharedPreferences.getString("yoon", "");
         et_save.setText(value);
 
+        /* int netWork = 0;
+        if (netWork == true ){
+
+
+
+        } */
+
     }
 
     @Override
