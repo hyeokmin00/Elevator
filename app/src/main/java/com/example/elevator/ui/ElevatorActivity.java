@@ -8,8 +8,6 @@ import com.example.elevator.R;
 
 public class ElevatorActivity extends AppCompatActivity {
 
-    private
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
