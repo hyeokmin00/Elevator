@@ -3,7 +3,7 @@ package com.example.elevator;
 import com.google.gson.annotations.SerializedName;
 
 public class Post {
-    private int lift_id;
+    private Integer lift_id;
     private String lift_name;
     private String lift_status;
     private String lift_address;
@@ -11,8 +11,7 @@ public class Post {
     @SerializedName("body")
     private String bodyValue;
 
-
-    public Post(int lift_id, String lift_name, String lift_status, String lift_address) {
+    public Post(Integer lift_id, String lift_name, String lift_status, String lift_address) {
         this.lift_id = lift_id;
         this.lift_name = lift_name;
         this.lift_status = lift_status;

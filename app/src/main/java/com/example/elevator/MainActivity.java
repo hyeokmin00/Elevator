@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void sendList0(){
-        Call<List<Post>>call = liftApi.createPost(1,"hyeokmin","abc","123");
+        Post post = new Post (10,"중앙도서관 01","정상","충북 충주시 대학로 50");
+        Call<List<Post>>call = liftApi.Post(post);
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -121,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendList1() {
-        Call<List<ErrorPost>> call = liftApi.ErrorPost(1,"Min","eod");
+        ErrorPost post = new ErrorPost(10,"비정상","120");
+        Call<List<ErrorPost>> call = liftApi.ErrorPost(post);
         call.enqueue(new Callback<List<ErrorPost>>() {
             @Override
             public void onResponse(Call<List<ErrorPost>> call, Response<List<ErrorPost>> response) {
@@ -140,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendList2() {
-        Call<List<Checkinglist>> call = liftApi.Checkinglist(1,"정상","정상작동함, 점검 완료");
+        Checkinglist post = new Checkinglist(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
+        Call<List<Checkinglist>> call = liftApi.Checkinglist(post);
         call.enqueue(new Callback<List<Checkinglist>>() {
             @Override
             public void onResponse(Call<List<Checkinglist>> call, Response<List<Checkinglist>> response) {

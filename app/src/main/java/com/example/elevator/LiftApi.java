@@ -17,29 +17,23 @@ public interface LiftApi {
     Call<List<Post>> getElevatorAllList();
 
     @POST("total/")  // 1
-    Call<List<Post>> createPost(
-            @Field("lift_id") int lift_id,
-            @Field("lift_name") String lift_name,
-            @Field("lift_status") String lift_status,
-            @Field("lift_address") String lift_address);
+    Call<List<Post>> Post(
+            @Body Post post);
+
 
     @GET("liftdetail/") // 2
-    Call<List<Post>> getElevatorSelectList(@Query(":lift_id/") int lift_id);
+    Call<List<Post>> getElevatorSelectList(@Query("lift_id/") int lift_id);
 
     @GET("afterdate/") // 6
-    Call<List<Post>> UpdateElevator (@Query(":date") String date);
+    Call<List<Post>> UpdateElevator (@Query("date") String date);
 
     @POST("posterr/") // 9
     Call<List<ErrorPost>> ErrorPost(
-            @Field("lift_id") int life_id,
-            @Field("lift_status") String lift_status,
-            @Field("lift_error") String lift_error);
+            @Body ErrorPost errorpost);
 
     @POST("postrepo/") // 12
     Call<List<Checkinglist>> Checkinglist(
-            @Field("life_id") int life_id,
-            @Field("lift_status") String  lift_status,
-            @Field("content") String content);
+            @Body Checkinglist checkinglist);
 
 
 }

@@ -4,18 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ErrorPost {
-
-
-    @SerializedName("lift_id")
-    @Expose
     private int lift_id;
-
-    @SerializedName("lift_status")
-    @Expose
     private  String lift_status;
-
-    @SerializedName("lift_error")
-    @Expose
     private String lift_error;
 
     public ErrorPost(int lift_id, String lift_status, String lift_error){
