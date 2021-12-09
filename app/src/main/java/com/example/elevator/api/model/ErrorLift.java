@@ -3,12 +3,12 @@ package com.example.elevator.api.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ErrorPost {
+public class ErrorLift {
     private int lift_id;
     private  String lift_status;
     private String lift_error;
 
-    public ErrorPost(int lift_id, String lift_status, String lift_error){
+    public ErrorLift(int lift_id, String lift_status, String lift_error){
         this.lift_id = lift_id;
         this.lift_status = lift_status;
         this.lift_error = lift_error;

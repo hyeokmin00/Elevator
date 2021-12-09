@@ -17,7 +17,7 @@ public class SharedExample extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shared_example);
+        setContentView(R.layout.activity_write_report);
 
         et_save = (EditText)findViewById(R.id.et_save);
 
