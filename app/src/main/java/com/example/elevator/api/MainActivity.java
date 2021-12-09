@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         sendList2(); // 점검사항 등록
 // commAPI
         Log.d("Test","commmit3");
+        Log.d("Test","commmit3");
 
     }
 
