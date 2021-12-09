@@ -2,22 +2,16 @@ package com.example.elevator.ui.main;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.example.elevator.R;
 import com.example.elevator.api.APIActivity;
-import com.example.elevator.api.model.Lift;
-import com.example.elevator.ui.SharedExample;
+import com.example.elevator.api.model.LiftInfo;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     APIActivity apiActivity = new APIActivity();
 
     RecyclerView recyclerView;
-    private ArrayList<Lift> liftArrayList = new ArrayList<>();
+    private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
 
 
     @Override
@@ -40,8 +34,15 @@ public class MainActivity extends AppCompatActivity {
         data.add("엘레베이터 2");
         data.add("엘레베이터 3");
 
+
+        //retrofitInit - Retrofit 객체 생성
         apiActivity.setRetrofitInit();
-        apiActivity.LiftList();
+
+
+        //LiftList 받아옴
+        RecyclerView recycler = findViewById(R.id.recyclerview);
+        apiActivity.LiftList(this, recycler);
+
 
 
 /*

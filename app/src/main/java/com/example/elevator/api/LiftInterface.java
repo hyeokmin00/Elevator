@@ -2,9 +2,9 @@ package com.example.elevator.api;
 
 import com.example.elevator.api.model.Checkinglist;
 import com.example.elevator.api.model.ErrorLift;
-import com.example.elevator.api.model.Lift;
+import com.example.elevator.api.model.LiftInfo;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -14,24 +14,24 @@ import retrofit2.http.Query;
 
 public interface LiftInterface {
     @GET("total")// 0
-    Call<List<Lift>> getElevatorAllList();
+    Call<ArrayList<LiftInfo>> getElevatorAllList();
 
     @POST("total/")  // 1
-    Call<List<Lift>> getLiftInfo(
-            @Body Lift lift);
+    Call<ArrayList<LiftInfo>> postLiftInfo(
+            @Body LiftInfo liftInfo);
 
     @GET("liftdetail/") // 2
-    Call<List<Lift>> getElevatorSelectList(@Query("lift_id/") int lift_id);
+    Call<ArrayList<LiftInfo>> getElevatorSelectList(@Query("lift_id/") int lift_id);
 
     @GET("afterdate/") // 6
-    Call<List<Lift>> UpdateElevator (@Query("date") String date);
+    Call<ArrayList<LiftInfo>> UpdatedElevator (@Query("date") String date);
 
     @POST("posterr/") // 9
-    Call<List<ErrorLift>> ErrorPost(
+    Call<ArrayList<ErrorLift>> ErrorPost(
             @Body ErrorLift errorpost);
 
     @POST("postrepo/") // 12
-    Call<List<Checkinglist>> Checkinglist(
+    Call<ArrayList<Checkinglist>> Checkinglist(
             @Body Checkinglist checkinglist);
 
 
