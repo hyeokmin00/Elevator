@@ -1,4 +1,4 @@
-package com.example.elevator.api;
+package com.example.elevator.api.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -33,6 +33,5 @@ public class ErrorPost {
     public void setLift_error(String lift_error){
         this.lift_error = lift_error;
     }
-
 
 }

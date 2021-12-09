@@ -1,11 +1,13 @@
 package com.example.elevator.api;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.elevator.R;
+import com.example.elevator.api.model.Checkinglist;
+import com.example.elevator.api.model.ErrorPost;
+import com.example.elevator.api.model.Post;
 
 import java.util.List;
 
@@ -16,11 +18,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class APIActivity extends AppCompatActivity {
     private ArrayList<Post> postArrayList = new ArrayList<>();
     private ArrayList<ErrorPost> errorPostArrayList = new ArrayList<>();
     private ArrayList<Checkinglist> checkinglistArrayList = new ArrayList<>();
-    private LiftApi liftApi;
+    private LiftService liftService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 // commAPI
         Log.d("Test","commmit3");
         Log.d("Test","commmit3");
-
     }
 
     public void setRetrofitInit() {
@@ -45,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        liftApi = retrofit.create(LiftApi.class);
+        liftService = retrofit.create(LiftService.class);
 
     }
 
     public void callList0(){
-        Call<List<Post>> call = liftApi.getElevatorAllList();
+        Call<List<Post>> call = liftService.getElevatorAllList();
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callList1(){
-        Call<List<Post>> call = liftApi.getElevatorSelectList(6);
+        Call<List<Post>> call = liftService.getElevatorSelectList(6);
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callList2(){
-        Call<List<Post>> call = liftApi.UpdateElevator("date");
+        Call<List<Post>> call = liftService.UpdateElevator("date");
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void sendList0(){
         Post post = new Post (10,"중앙도서관 01","정상","충북 충주시 대학로 50");
-        Call<List<Post>>call = liftApi.Post(post);
+        Call<List<Post>>call = liftService.Post(post);
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendList1() {
         ErrorPost post = new ErrorPost(10,"비정상","120");
-        Call<List<ErrorPost>> call = liftApi.ErrorPost(post);
+        Call<List<ErrorPost>> call = liftService.ErrorPost(post);
         call.enqueue(new Callback<List<ErrorPost>>() {
             @Override
             public void onResponse(Call<List<ErrorPost>> call, Response<List<ErrorPost>> response) {
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendList2() {
         Checkinglist post = new Checkinglist(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
-        Call<List<Checkinglist>> call = liftApi.Checkinglist(post);
+        Call<List<Checkinglist>> call = liftService.Checkinglist(post);
         call.enqueue(new Callback<List<Checkinglist>>() {
             @Override
             public void onResponse(Call<List<Checkinglist>> call, Response<List<Checkinglist>> response) {
