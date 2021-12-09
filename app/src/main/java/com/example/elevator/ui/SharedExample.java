@@ -27,11 +27,7 @@ public class SharedExample extends AppCompatActivity {
 
         /* int netWork = 0;
         if (netWork == true ){
-
         ((class)class.mContext).open메서드();
-
-
-
         } */
 
     }

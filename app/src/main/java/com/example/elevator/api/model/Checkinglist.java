@@ -1,4 +1,4 @@
-package com.example.elevator.api;
+package com.example.elevator.api.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,6 @@ public class Checkinglist {
 
     @SerializedName("body")
     private String bodyValue;
-
 
     public Checkinglist(int lift_id, String lift_status, String content){
         this.lift_id = lift_id;
