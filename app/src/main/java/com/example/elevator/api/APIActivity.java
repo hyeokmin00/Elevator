@@ -4,6 +4,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.elevator.api.model.Checkinglist;
 import com.example.elevator.api.model.ErrorLift;
@@ -56,7 +58,7 @@ public class APIActivity {
 
     }
 
-    public void LiftList(Context context,RecyclerView recycler){
+    public void LiftList(Context context,RecyclerView recycler, View view){
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorAllList();
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
@@ -64,12 +66,17 @@ public class APIActivity {
                 if(response.isSuccessful()){
 
                     ArrayList<LiftInfo> result = response.body();
-                    ArrayList<LiftInfo> totalLiftInfoInfos = null;
+                    ArrayList<LiftInfo> totalLiftInfo = null;
 
                     liftRecyAdapter = new LiftRecyAdapter(result, context);
+
+
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                     recycler.setLayoutManager(linearLayoutManager);
                     recycler.setAdapter(liftRecyAdapter);
+                    // Recycler view item click event 처리
+
+
 
 
                     Log.d("dataAll","dataAll : " );
