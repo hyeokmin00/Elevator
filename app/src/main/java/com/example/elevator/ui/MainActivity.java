@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Intent intent = new Intent(MainActivity.this, SharedExample.class);
         startActivity(intent);
+
+
     }
 
 
