@@ -4,8 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
+    tools:context=".api.MainActivity">
+=======
     android:orientation="vertical"
     tools:context=".MainActivity">
+>>>>>>> 132f59cef86db040794c1efcf476c775d4b30cf9
 
     <TextView
         android:layout_width="wrap_content"

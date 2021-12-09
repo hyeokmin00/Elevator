@@ -1,4 +1,4 @@
-package com.example.elevator;
+package com.example.elevator.api;
 
 import com.google.gson.annotations.SerializedName;
 

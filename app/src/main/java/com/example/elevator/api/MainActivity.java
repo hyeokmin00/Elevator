@@ -1,13 +1,12 @@
-package com.example.elevator;
+package com.example.elevator.api;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
+import com.example.elevator.R;
+
 import java.util.List;
 
 import retrofit2.Call;
