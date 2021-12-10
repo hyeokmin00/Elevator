@@ -1,6 +1,6 @@
 package com.example.elevator.api;
 
-import com.example.elevator.api.model.Checkinglist;
+import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
 
@@ -31,8 +31,9 @@ public interface LiftInterface {
             @Body ErrorLift errorpost);
 
     @POST("postrepo/") // 12
-    Call<ArrayList<Checkinglist>> Checkinglist(
-            @Body Checkinglist checkinglist);
+    Call <ReportList> SendReport(
+            @Body ReportList reportList);
+           // @Body ReportList reportList);
 
 
 }

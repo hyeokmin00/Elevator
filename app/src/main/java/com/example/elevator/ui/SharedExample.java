@@ -19,10 +19,10 @@ public class SharedExample extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_report);
 
-        et_save = (EditText)findViewById(R.id.et_save);
+        et_save = (EditText)findViewById(R.id.write_ed_content);
 
         SharedPreferences sharedPreferences = getSharedPreferences(shared, 0);
-        String value = sharedPreferences.getString("yoon", "");
+        String value = sharedPreferences.getString("content", "");
         et_save.setText(value);
 
         /* int netWork = 0;

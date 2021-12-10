@@ -9,16 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.R;
 import com.example.elevator.api.model.LiftInfo;
-import com.example.elevator.ui.main.MainActivity;
-import com.example.elevator.ui.report.WriteReport;
+import com.example.elevator.ui.report.WriteReportActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
@@ -45,7 +42,13 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
         liftViewHolder.itemView.setOnClickListener((v) -> {
             Toast.makeText(context,"승강기 id : " + liftInfoInfoList.get(position).getLiftId(), Toast.LENGTH_SHORT).show();
           //  Log.d("Test", "승강기 id : " + liftInfoInfoList.get(position).getLiftId());
-            Log.d("Test", "승강기 id : " + liftInfoInfoList.get(position).getLiftId());
+            Log.d("Test", "LiftRecyAdapter - 승강기 id : " + liftInfoInfoList.get(position).getLiftId());
+
+            Intent intent = new Intent(context, WriteReportActivity.class);
+            intent.putExtra("lift_id", liftInfoInfoList.get(position).getLiftId());
+            context.startActivity(intent);
+
+           // intent.putExtra("text", );
 
         });
     }
@@ -96,7 +99,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
                     final int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         itemClickListener.onItemClick(v, position);
-                        Intent intent = new Intent(context, WriteReport.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Intent intent = new Intent(context, WriteReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     //    intent.putExtra("lift_id",liftInfoInfoList.get );
 
 

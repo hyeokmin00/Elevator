@@ -1,13 +1,13 @@
 package com.example.elevator.api;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 
-import com.example.elevator.api.model.Checkinglist;
+import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
 import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
@@ -20,13 +20,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 import java.util.ArrayList;
 
 public class APIActivity {
-//public class APIActivity extends AppCompatActivity {
+    //public class APIActivity extends AppCompatActivity {
     private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
-    private ArrayList<Checkinglist> checkinglistArrayList = new ArrayList<>();
+    private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
     LiftRecyAdapter liftRecyAdapter;
 
@@ -58,12 +59,12 @@ public class APIActivity {
 
     }
 
-    public void LiftList(Context context,RecyclerView recycler, View view){
+    public void LiftList(Context context, RecyclerView recycler, View view) {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorAllList();
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     ArrayList<LiftInfo> result = response.body();
                     ArrayList<LiftInfo> totalLiftInfo = null;
@@ -76,73 +77,75 @@ public class APIActivity {
                     recycler.setAdapter(liftRecyAdapter);
                     // Recycler view item click event 처리
 
-
-
-
-                    Log.d("dataAll","dataAll : " );
-                }else {
+                    Log.d("dataAll", "dataAll : ");
+                } else {
                     Log.d("dataAll", 2 + "Error");
                 }
 
             }
+
             @Override
             public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit","ERROR");
+                Log.d("retrofit", "ERROR");
             }
         });
     }
 
-    public void UnitLiftInfo(int lift_id ){
+    public void UnitLiftInfo(int lift_id) {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorSelectList(lift_id);
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     List<LiftInfo> date = (List<LiftInfo>) response.body();
-                    Log.d("liftUnitInfo",lift_id+" : " + date);
+                    Log.d("liftUnitInfo", lift_id + " : " + date);
                 }
             }
+
             @Override
             public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit","ERROR");
+                Log.d("retrofit", "ERROR");
             }
         });
     }
 
-    public void UpdatedLiftList(String date){
+    public void UpdatedLiftList(String date) {
         Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     ArrayList<LiftInfo> date = (ArrayList<LiftInfo>) response.body();
-                    Log.d("date","date : " + date);
+                    Log.d("date", "date : " + date);
                 }
             }
+
             @Override
             public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit","ERROR");
+                Log.d("retrofit", "ERROR");
             }
         });
     }
-    public void createLift(LiftInfo liftInfo){
-      //  Lift lift = new Lift(10,"중앙도서관 01","정상","충북 충주시 대학로 50");
-        Call<ArrayList<LiftInfo>>call = liftInterface.postLiftInfo(liftInfo);
+
+    public void createLift(LiftInfo liftInfo) {
+        //  Lift lift = new Lift(10,"중앙도서관 01","정상","충북 충주시 대학로 50");
+        Call<ArrayList<LiftInfo>> call = liftInterface.postLiftInfo(liftInfo);
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     List<LiftInfo> date = (List<LiftInfo>) response.body();
-                    Log.d("retrofit","res : " + date);
+                    Log.d("retrofit", "res : " + date);
                 }
             }
+
             @Override
             public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit","ERROR");
+                Log.d("retrofit", "ERROR");
             }
         });
     }
@@ -153,35 +156,50 @@ public class APIActivity {
         call.enqueue(new Callback<ArrayList<ErrorLift>>() {
             @Override
             public void onResponse(Call<ArrayList<ErrorLift>> call, Response<ArrayList<ErrorLift>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     ArrayList<ErrorLift> date = (ArrayList<ErrorLift>) response.body();
-                    Log.d("ErrorPost","res : " + date);
+                    Log.d("ErrorPost", "res : " + date);
                 }
             }
-            @Override
-            public void onFailure(Call<ArrayList<ErrorLift>> call, Throwable t){
-                t.printStackTrace();
-                Log.d("retrofit","ERROR");
-            }
 
+            @Override
+            public void onFailure(Call<ArrayList<ErrorLift>> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("retrofit", "ERROR");
+            }
         });
     }
 
-    public void Checkinglist( Checkinglist checkinglist) {
-       // Checkinglist checkinglist = new Checkinglist(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
-        Call<ArrayList<Checkinglist>> call = liftInterface.Checkinglist(checkinglist);
-        call.enqueue(new Callback<ArrayList<Checkinglist>>() {
+    public void WriteRepoLift(ReportList reportList) {
+        // Checkinglist checkinglist = new Checkinglist(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
+      //  Call<ReportList> call = liftInterface.SendReport(reportList);
+        Call<ReportList> call = liftInterface.SendReport(reportList);
+        call.enqueue(new Callback<ReportList>() {
             @Override
-            public void onResponse(Call<ArrayList<Checkinglist>> call, Response<ArrayList<Checkinglist>> response) {
-                if(response.isSuccessful()){
-                    ArrayList<Checkinglist> date = (ArrayList<Checkinglist>) response.body();
-                    Log.d("Checkinglist","res : " + date);
+          public void onResponse(Call<ReportList> call, Response<ReportList> response) {
+
+                if (response.isSuccessful()) {
+                    if(response != null){
+                     //   ReportList date = (ReportList) response.body();
+
+                        String date = response.message();
+                        Log.d("Checkinglist", "res : " + date);
+                    }else{
+                         ReportList date = (ReportList) response.body();
+                        Log.d("Checkinglist", "body : null - "+date);
+                    }
+
+                } else {
+                    Log.d("Checkinglist", 2 + "Error");
                 }
             }
+
             @Override
-            public void onFailure(Call<ArrayList<Checkinglist>> call, Throwable t) {
+            public void onFailure(Call<ReportList> call, Throwable t) {
+
                 t.printStackTrace();
-                Log.d("retrofit","ERROR");
+                Log.d("retrofit", "ERROR");
+
             }
         });
     }
