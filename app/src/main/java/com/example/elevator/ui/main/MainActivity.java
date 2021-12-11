@@ -16,6 +16,13 @@ import com.example.elevator.api.model.LiftInfo;
 
 public class MainActivity extends AppCompatActivity {
 
+    //api로 받아온 데이터 sharedPreferences에 저장 된 데이터 표현
+    //리스트 중 아이템 클릭 시
+    //todo 엘리베이터와의 wifi 연결 후 상태정보 수신 - 다른 액티비티 또는 다이얼로그?
+    //엘리베이터와 wifi 연결  끊은 후 상태 api 서버에 전송 - id : lift_id
+    //점검 내용 입력할 수 있는 화면으로 전환
+
+
     APIController apiController = new APIController();
     RecyclerView recyclerView;
     private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
@@ -28,42 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview);
 
-        List<String> data = new ArrayList<String>();
-        data.add("엘레베이터 1");
-        data.add("엘레베이터 2");
-        data.add("엘레베이터 3");
-
-
         //retrofitInit - Retrofit 객체 생성
         apiController.setRetrofitInit();
-
-
         //LiftList 받아옴
         RecyclerView recycler = findViewById(R.id.recyclerview);
-        apiController.LiftList(this, recycler,recyclerView);
-
-
-
-/*
-        liftRecyAdapter = new TotalRecyAdapter(result, MainActivity.this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-        recycler.setLayoutManager(linearLayoutManager);
-        recycler.setAdapter(totalRecyAdapter);
-
-        recyclerView.setAdapter(adapter);
-
-       // ((class)class.mContext).open메서드();
-
-
-        adapter.notifyDataSetChanged();*/
-
-///요 코딩은 list를 클릭 했을경우 실행되는 코드
-     //   recyclerView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
 
 
     }
-    /// 리스트 클릭하면 Shared 로 화면 전환하게 하는거 ......
-
-
-
 }

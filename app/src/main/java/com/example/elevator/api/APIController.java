@@ -24,30 +24,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.ArrayList;
 
 public class APIController {
-    //public class APIActivity extends AppCompatActivity {
+    // json 객체 api에 전송
+    //todo  response 후 wifi disable - lte 연결이 아닌 wifit 연결이 맞는지 확인 필요
+
+
+
     private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
     LiftRecyAdapter liftRecyAdapter;
 
-
-  /*  @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setRetrofitInit(); // 서버 생성
-        callList0(); // 전체 파일 받아오기
-        callList1(); //  개별 승강기 정보 조회
-        callList2(); // 오늘 날짜 이후로 업데이트 된 승강기 목록
-        sendList0(); // 승강기 추가
-        sendList1(); // 오류 코드 전송
-        sendList2(); // 점검사항 등록
-// commAPI
-        Log.d("Test","commmit3");
-        Log.d("Test","commmit3");
-    }*/
 
     public void setRetrofitInit() {
         Retrofit retrofit = new Retrofit.Builder()

@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SockClient {
+	//Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
+	// 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
 
 	final int port = 5000;
 	final String serverIp = "192.168.5.5";
@@ -18,6 +20,7 @@ public class SockClient {
 	JSONArray objArray = new JSONArray();
 
 	void send(JSONObject obj){
+		//Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
 		try {
 			socket = new Socket(serverIp, port);
 
@@ -44,6 +47,8 @@ public class SockClient {
 	}
 
 	JSONObject recv() {
+		// 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
+
 		int size = 1024;
 		int recvSize = 0;
 		int start_id_index = 5;
