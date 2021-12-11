@@ -158,22 +158,15 @@ public class APIController {
     }
 
     public void WriteRepoLift(ReportList reportList) {
-        // ReportList reportList = new ReportList(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
-        //  Call<ReportList> call = liftInterface.SendReport(reportList);
-       // ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
-
         liftInterface.SendReport(reportList).enqueue(new Callback<ReportList>() {
             @Override
             public void onResponse(Call<ReportList> call, Response<ReportList> response) {
                 if (!response.isSuccessful()) {
-
                     Log.d("Test", "APIController - WriteRepoLift - error");
                     //  textViewResult.setText("code: " + response.code());
-
                 }else{
                     ReportList result = response.body();
                     Log.d("Test", "result : " + result.getReport_date());
-
                 }
             }
 
@@ -183,32 +176,5 @@ public class APIController {
             }
         });
 
-
-
-       /*
-        Call<ReportList> call = liftInterface.SendReport(reportList);
-        call.enqueue(new Callback<ReportList>() {
-            @Override
-            public void onResponse(Call<ReportList> call, Response<ReportList> response) {
-
-                if (!response.isSuccessful()) {
-
-                    Log.d("Test", "APIController - WriteRepoLift - error");
-                  //  textViewResult.setText("code: " + response.code());
-
-                }else{
-                    ReportList result = response.body();
-                    Log.d("Test", "result : " + result.getReport_date());
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReportList> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("retrofit", "ERROR");
-
-            }
-        });*/
     }
 }

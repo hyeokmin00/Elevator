@@ -22,7 +22,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 public class ConnectionMgr extends AppCompatActivity {
-    // 와이파이 사용가능하게 하고 연결된 wifi 기긱의 ssid 반환
+    // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
     // wifi disable
 
 

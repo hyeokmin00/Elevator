@@ -2,11 +2,18 @@ package com.example.elevator.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.EditText;
 
 import com.example.elevator.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class SharedExample extends AppCompatActivity {
 
@@ -31,6 +38,8 @@ public class SharedExample extends AppCompatActivity {
         } */
 
     }
+
+
 
     @Override
     protected void onDestroy() {
