@@ -5,6 +5,7 @@ import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -31,8 +32,7 @@ public interface LiftInterface {
             @Body ErrorLift errorpost);
 
     @POST("postrepo/") // 12
-    Call <ReportList> SendReport(
-            @Body ReportList reportList);
+    Call <ReportList> SendReport(@Body ReportList reportList);
            // @Body ReportList reportList);
 
 

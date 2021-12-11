@@ -3,14 +3,14 @@ package com.example.elevator.api.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ReportList {
+    @SerializedName("lift_id")
     private int lift_id;
+    @SerializedName("content")
     private String content;
+    @SerializedName("report_date")
     private String report_date;
 
-    @SerializedName("body")
-    private String bodyValue;
-
-    public ReportList(int lift_id, String content, String report_date){
+   public ReportList(int lift_id, String content, String report_date){
         this.lift_id = lift_id;
         this.content = content;
         this.report_date = report_date;

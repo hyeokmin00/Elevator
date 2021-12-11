@@ -10,14 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.elevator.R;
-import com.example.elevator.api.APIActivity;
+import com.example.elevator.api.APIController;
 import com.example.elevator.api.model.LiftInfo;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    APIActivity apiActivity = new APIActivity();
-
+    APIController apiController = new APIController();
     RecyclerView recyclerView;
     private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
 
@@ -36,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         //retrofitInit - Retrofit 객체 생성
-        apiActivity.setRetrofitInit();
+        apiController.setRetrofitInit();
 
 
         //LiftList 받아옴
         RecyclerView recycler = findViewById(R.id.recyclerview);
-        apiActivity.LiftList(this, recycler,recyclerView);
+        apiController.LiftList(this, recycler,recyclerView);
 
 
 

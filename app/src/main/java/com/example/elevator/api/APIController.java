@@ -23,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.ArrayList;
 
-public class APIActivity {
+public class APIController {
     //public class APIActivity extends AppCompatActivity {
     private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
@@ -171,32 +171,28 @@ public class APIActivity {
     }
 
     public void WriteRepoLift(ReportList reportList) {
-        // Checkinglist checkinglist = new Checkinglist(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
-      //  Call<ReportList> call = liftInterface.SendReport(reportList);
+        // ReportList reportList = new ReportList(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
+        //  Call<ReportList> call = liftInterface.SendReport(reportList);
+    //    ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
+
         Call<ReportList> call = liftInterface.SendReport(reportList);
+
         call.enqueue(new Callback<ReportList>() {
             @Override
-          public void onResponse(Call<ReportList> call, Response<ReportList> response) {
+            public void onResponse(Call<ReportList> call, Response<ReportList> response) {
 
-                if (response.isSuccessful()) {
-                    if(response != null){
-                     //   ReportList date = (ReportList) response.body();
+                if (!response.isSuccessful()) {
 
-                        String date = response.message();
-                        Log.d("Checkinglist", "res : " + date);
-                    }else{
-                         ReportList date = (ReportList) response.body();
-                        Log.d("Checkinglist", "body : null - "+date);
-                    }
-
-                } else {
-                    Log.d("Checkinglist", 2 + "Error");
+                    Log.d("Test", "APIController - WriteRepoLift - error");
+                  //  textViewResult.setText("code: " + response.code());
+                    return;
                 }
+                ReportList result = response.body();
+                Log.d("Test", "result : " + result);
             }
 
             @Override
             public void onFailure(Call<ReportList> call, Throwable t) {
-
                 t.printStackTrace();
                 Log.d("retrofit", "ERROR");
 

@@ -1,5 +1,6 @@
 package com.example.elevator.ui.report;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,15 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.elevator.R;
-import com.example.elevator.api.APIActivity;
+import com.example.elevator.api.APIController;
 import com.example.elevator.api.model.ReportList;
 
 public class WriteReportActivity extends AppCompatActivity {
     //activity_writereport
-    APIActivity apiActivity = new APIActivity();
+    APIController apiController = new APIController();
     EditText edContent;
     TextView tvDate;
     AppCompatButton appCompatButton;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +42,16 @@ public class WriteReportActivity extends AppCompatActivity {
         appCompatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+              //  ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
                 ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
 
                 Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getLift_id());
                 Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getContent());
                 Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getReport_date());
 
-                apiActivity.WriteRepoLift(reportList);
+                apiController.WriteRepoLift(reportList);
 
-               // finish();
+                finish();
             }
         });
     }
