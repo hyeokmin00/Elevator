@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         apiController.setRetrofitInit();
         //LiftList 받아옴
         RecyclerView recycler = findViewById(R.id.recyclerview);
+        //현재 apiacontroller의 liftlist에서 바로 recycler뷰로 데이터 붙이게 되어있음
+        //해당 내용 시나리오에 맞춰 변경 필요
         apiController.LiftList(this, recycler, recyclerView);
 
 
