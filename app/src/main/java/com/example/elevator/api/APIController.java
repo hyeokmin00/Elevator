@@ -172,7 +172,6 @@ public class APIController {
 
             @Override
             public void onFailure(Call<ReportList> call, Throwable t) {
-
             }
         });
 

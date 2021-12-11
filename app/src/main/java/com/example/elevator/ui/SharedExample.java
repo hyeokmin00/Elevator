@@ -25,7 +25,6 @@ public class SharedExample extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_report);
-
         et_save = (EditText)findViewById(R.id.write_ed_content);
 
         SharedPreferences sharedPreferences = getSharedPreferences(shared, 0);
@@ -38,7 +37,6 @@ public class SharedExample extends AppCompatActivity {
         } */
 
     }
-
 
 
     @Override

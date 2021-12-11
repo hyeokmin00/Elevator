@@ -40,15 +40,11 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
 
 
         liftViewHolder.itemView.setOnClickListener((v) -> {
-            Toast.makeText(context,"승강기 id : " + liftInfoInfoList.get(position).getLiftId(), Toast.LENGTH_SHORT).show();
-          //  Log.d("Test", "승강기 id : " + liftInfoInfoList.get(position).getLiftId());
             Log.d("Test", "LiftRecyAdapter - 승강기 id : " + liftInfoInfoList.get(position).getLiftId());
 
             Intent intent = new Intent(context, WriteReportActivity.class);
             intent.putExtra("lift_id", liftInfoInfoList.get(position).getLiftId());
             context.startActivity(intent);
-
-           // intent.putExtra("text", );
 
         });
     }
