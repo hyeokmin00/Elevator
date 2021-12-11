@@ -40,7 +40,7 @@
         android:id="@+id/write_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="점검날짜 : 2021-12-10"
+        android:text="2021-12-10"
         android:textSize="16sp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/write_btn_send"

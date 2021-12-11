@@ -15,13 +15,14 @@ import com.example.elevator.R;
 import com.example.elevator.api.APIController;
 import com.example.elevator.api.model.ReportList;
 
+import retrofit2.Retrofit;
+
 public class WriteReportActivity extends AppCompatActivity {
     //activity_writereport
     APIController apiController = new APIController();
     EditText edContent;
     TextView tvDate;
     AppCompatButton appCompatButton;
-    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +43,19 @@ public class WriteReportActivity extends AppCompatActivity {
         appCompatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
-                ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
+                ReportList reportList = new ReportList(Integer.parseInt(liftId), edContent.getText().toString(), tvDate.getText().toString());
 
-                Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getLift_id());
-                Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getContent());
-                Log.d("Test", "WriteReportActivity - checkinglist : " + reportList.getReport_date());
+                int lift_id = Integer.parseInt(liftId);
+                String content = edContent.getText().toString();
+                String report_date = tvDate.getText().toString();
 
+
+                Log.d("Test", "WriteReportActivity - lift_id : " + lift_id);
+                Log.d("Test", "WriteReportActivity - content : " + content);
+                Log.d("Test", "WriteReportActivity - report_date : " + report_date);
+
+
+                apiController.setRetrofitInit();
                 apiController.WriteRepoLift(reportList);
 
                 finish();
