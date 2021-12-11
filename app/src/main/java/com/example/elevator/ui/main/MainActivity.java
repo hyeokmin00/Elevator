@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         apiController.setRetrofitInit();
         //LiftList 받아옴
         RecyclerView recycler = findViewById(R.id.recyclerview);
+        apiController.LiftList(this, recycler, recyclerView);
 
 
     }
