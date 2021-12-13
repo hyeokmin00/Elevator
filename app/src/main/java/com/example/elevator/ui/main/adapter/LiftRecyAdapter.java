@@ -17,6 +17,7 @@ import com.example.elevator.ui.report.WriteReportActivity;
 
 import java.util.ArrayList;
 
+// todo 버튼 두 번 클릭되는지 확인해야함
 
 public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
 

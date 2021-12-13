@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         //retrofitInit - Retrofit 객체 생성
         apiController.setRetrofitInit();
-
-
         //LiftList 받아옴
         RecyclerView recycler = findViewById(R.id.recyclerview);
         apiController.LiftList(this, recycler,recyclerView);
