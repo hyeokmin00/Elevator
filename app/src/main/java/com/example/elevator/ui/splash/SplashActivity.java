@@ -35,17 +35,10 @@ public class SplashActivity extends AppCompatActivity {
 
         //retrofitInit - Retrofit 객체 생성
         apiController.setRetrofitInit();
+        apiController.LiftList(this);
 
 
-
-
-
-
-
-        apiController.LiftList(context);
-
-
-        startActivity(new Intent(this, MainActivity.class));
+      //  startActivity(new Intent(this, MainActivity.class));
 
 
 

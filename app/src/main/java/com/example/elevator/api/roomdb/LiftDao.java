@@ -26,7 +26,7 @@ public interface LiftDao {
 
     // api에서 받아온 모든 데이터 받아옴
     @Query("SELECT * FROM Lift")
-    LiveData<List<Lift>> getAll(); //LiveData
+    List<Lift> getAll(); //LiveData
 
     @Query("DELETE FROM Lift")
     void deleteAll();

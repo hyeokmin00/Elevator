@@ -39,7 +39,7 @@ public class LiftInfo {
     }
 
 
-    @SerializedName("lift_address")
+    @SerializedName("address")
     @Expose
     private String address;
     public String getAddress() {

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.OnConflictStrategy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
 import com.example.elevator.api.roomdb.Lift;
 import com.example.elevator.api.roomdb.LiftDB;
+import com.example.elevator.ui.main.MainActivity;
 
 
 import java.util.List;
@@ -70,16 +72,23 @@ public class APIController {
                         //todo DB에 저장 insert - thread 에서 처리해야함
 
                         //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
-                        class InsertRunnable implements Runnable{
+                        class InsertRunnable implements Runnable {
                             @Override
-                            public void run(){
+                            public void run() {
+                                //todo 값이 중첩되어 저장되는지 확인
                                 LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
+
+
+                                // 값 전체 삭제
+                                //  LiftDB.getInstance(context).liftDao().deleteAll();
                             }
                         }
                         InsertRunnable insertRunnable = new InsertRunnable();
                         Thread t = new Thread(insertRunnable);
                         t.start();
                     }
+                    context.startActivity(new Intent(context, MainActivity.class));
+
 
                     Log.d("dataAll", "dataAll : ");
                 } else {

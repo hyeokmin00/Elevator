@@ -23,15 +23,13 @@ import java.util.List;
 //context or List가 아닌 DB 객체를 전달받아 사용함
 // 해당 RecyclerView api에서 바로 받아오는 것이 아니라 DB에 저장된 데이터를 가져와 출력하기 때문임
 
-public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
+public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.ui.main.adapter.LiftRecyAdapter.LiftViewHolder> {
 
     private List<Lift> items = new ArrayList<>();
     Context context;
-    //RoomDB에 저장된 데이터 불러들이기 위해 DB 객체 생성
-    private LiftDB db;
 
-    public LiftRecyAdapter(LiftDB db) {
-        this.db = db;
+    public LiftRecyAdapter(List<Lift> items) {
+        this.items = items;
     }
 
     @Override
@@ -101,7 +99,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
                     if (position != RecyclerView.NO_POSITION) {
                         itemClickListener.onItemClick(v, position);
                         Intent intent = new Intent(context, WriteReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    //    intent.putExtra("lift_id",liftInfoInfoList.get );
+                        //    intent.putExtra("lift_id",liftInfoInfoList.get );
 
                     }
                 }
@@ -114,5 +112,6 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
         items = data;
         notifyDataSetChanged();
     }
+
 
 }
