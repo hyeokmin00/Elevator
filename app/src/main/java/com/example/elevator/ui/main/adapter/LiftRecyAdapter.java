@@ -13,37 +13,41 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.R;
 import com.example.elevator.api.model.LiftInfo;
+import com.example.elevator.api.roomdb.Lift;
+import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.ui.report.WriteReportActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
 
-    ArrayList<LiftInfo> liftInfoInfoList;
+    private List<Lift> items = new ArrayList<>();
     Context context;
+    //RoomDB에 저장된 데이터 불러들이기 위해 DB 객체 생성
+    private LiftDB db;
 
-    public LiftRecyAdapter(ArrayList<LiftInfo> liftInfoInfoList, Context context) {
-        this.liftInfoInfoList = liftInfoInfoList;
-        this.context = context;
+    public LiftRecyAdapter(LiftDB db) {
+        this.db = db;
     }
 
     @Override
     public void onBindViewHolder(LiftViewHolder liftViewHolder, int position) {
-        final LiftInfo totalLiftInfoInfo = liftInfoInfoList.get(position);
+        final Lift totalLiftInfoInfo = items.get(position);
 
         liftViewHolder.tvId.setText(totalLiftInfoInfo.getLiftId());
-        liftViewHolder.tvName.setText(totalLiftInfoInfo.getLiftName());
-        liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getLiftStatus());
-        liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddress());
+        liftViewHolder.tvName.setText(totalLiftInfoInfo.getName());
+        liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getStatus());
+        liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddr());
         //  liftViewHolder.tvUpdate.setText(updatedAtDate);
 
 
         liftViewHolder.itemView.setOnClickListener((v) -> {
-            Log.d("Test", "LiftRecyAdapter - 승강기 id : " + liftInfoInfoList.get(position).getLiftId());
+            Log.d("Test", "LiftRecyAdapter - 승강기 id : " + items.get(position).getLiftId());
 
             Intent intent = new Intent(context, WriteReportActivity.class);
-            intent.putExtra("lift_id", liftInfoInfoList.get(position).getLiftId());
+            intent.putExtra("lift_id", items.get(position).getLiftId());
             context.startActivity(intent);
 
         });
@@ -51,7 +55,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
 
     @Override
     public int getItemCount() {
-        return liftInfoInfoList.size();
+        return items.size();
     }
 
     private OnItemClickEventListener mItemClickListener;

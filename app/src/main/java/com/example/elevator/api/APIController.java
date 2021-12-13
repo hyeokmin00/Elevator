@@ -10,7 +10,6 @@ import android.view.View;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
-import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
 
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class APIController {
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
-    LiftRecyAdapter liftRecyAdapter;
+
 
 
     public void setRetrofitInit() {
@@ -46,7 +45,8 @@ public class APIController {
 
     }
 
-    public void LiftList(Context context, RecyclerView recycler, View view) {
+    // 엘레베이터 전체 정보 전송받음
+    public void LiftList() {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorAllList();
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
@@ -56,13 +56,8 @@ public class APIController {
                     ArrayList<LiftInfo> result = response.body();
                     ArrayList<LiftInfo> totalLiftInfo = null;
 
-                    liftRecyAdapter = new LiftRecyAdapter(result, context);
+                    //todo sharedPref에 저장
 
-
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                    recycler.setLayoutManager(linearLayoutManager);
-                    recycler.setAdapter(liftRecyAdapter);
-                    // Recycler view item click event 처리
 
                     Log.d("dataAll", "dataAll : ");
                 } else {

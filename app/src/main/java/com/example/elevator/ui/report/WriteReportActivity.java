@@ -115,8 +115,6 @@ public class WriteReportActivity extends AppCompatActivity {
         APIController apiController = new APIController();
         apiController.setRetrofitInit();
         apiController.WriteRepoLift(reportList);
-
-
     }
 
 
