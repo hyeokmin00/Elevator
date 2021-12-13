@@ -10,14 +10,52 @@
 
     tools:context=".ui.SharedExample">
 
+
+    <TextView
+        android:id="@+id/write_tv_lift_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="승강기 번호 : "
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/write_tv_worker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="작업자"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/write_tv_lift_id"
+
+        />
+
+    <EditText
+        android:id="@+id/write_ed_worker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:background="@android:color/transparent"
+        android:hint="작업자 이름 ex) 전원우"
+        android:text="전원우"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/write_tv_worker"
+        app:layout_constraintTop_toTopOf="@id/write_tv_worker" />
+
+
     <TextView
         android:id="@+id/write_tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="점검 내용"
         android:textSize="16sp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/write_tv_worker"
 
         />
 
@@ -40,12 +78,36 @@
         android:id="@+id/write_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2021-12-10"
+        android:text="작업 날짜"
         android:textSize="16sp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/write_btn_send"
         app:layout_constraintStart_toStartOf="parent"
         />
+    <EditText
+        android:id="@+id/write_ed_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2021-12-10"
+        android:textSize="16sp"
+        android:layout_marginStart="10dp"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/write_btn_send"
+        app:layout_constraintStart_toEndOf="@id/write_tv_date"
+        />
+    <ImageView
+        android:id="@+id/write_btn_calendar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/write_ed_date"
+        app:layout_constraintBottom_toBottomOf="@id/write_ed_date"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginStart="10dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintStart_toEndOf="@id/write_ed_date"
+        />
+
 
 
     <androidx.appcompat.widget.AppCompatButton

@@ -2,11 +2,18 @@ package com.example.elevator.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.EditText;
 
 import com.example.elevator.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class SharedExample extends AppCompatActivity {
 
@@ -18,7 +25,6 @@ public class SharedExample extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_report);
-
         et_save = (EditText)findViewById(R.id.write_ed_content);
 
         SharedPreferences sharedPreferences = getSharedPreferences(shared, 0);
@@ -31,6 +37,7 @@ public class SharedExample extends AppCompatActivity {
         } */
 
     }
+
 
     @Override
     protected void onDestroy() {

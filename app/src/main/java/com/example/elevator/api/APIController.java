@@ -2,15 +2,19 @@ package com.example.elevator.api;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.OnConflictStrategy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
-import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
+import com.example.elevator.api.roomdb.Lift;
+import com.example.elevator.api.roomdb.LiftDB;
+import com.example.elevator.ui.main.MainActivity;
 
 
 import java.util.List;
@@ -24,30 +28,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.ArrayList;
 
 public class APIController {
-    //public class APIActivity extends AppCompatActivity {
-    private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
+    // json 객체 api에 전송
+    //todo  response 후 wifi disable - lte 연결이 아닌 wifit 연결이 맞는지 확인 필요
+
+
+    private ArrayList<Lift> liftInfoArrayList = new ArrayList<>();
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
-    LiftRecyAdapter liftRecyAdapter;
+    private LiftDB db = null;
 
-
-  /*  @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setRetrofitInit(); // 서버 생성
-        callList0(); // 전체 파일 받아오기
-        callList1(); //  개별 승강기 정보 조회
-        callList2(); // 오늘 날짜 이후로 업데이트 된 승강기 목록
-        sendList0(); // 승강기 추가
-        sendList1(); // 오류 코드 전송
-        sendList2(); // 점검사항 등록
-// commAPI
-        Log.d("Test","commmit3");
-        Log.d("Test","commmit3");
-    }*/
 
     public void setRetrofitInit() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -59,23 +49,46 @@ public class APIController {
 
     }
 
-    public void LiftList(Context context, RecyclerView recycler, View view) {
+    // 엘레베이터 전체 정보 전송받음
+    // todo LiftDao 참고하여 Insert 동작
+    public void LiftList(Context context) {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorAllList();
+
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
                 if (response.isSuccessful()) {
 
+
                     ArrayList<LiftInfo> result = response.body();
-                    ArrayList<LiftInfo> totalLiftInfo = null;
 
-                    liftRecyAdapter = new LiftRecyAdapter(result, context);
+                    for (int i = 0; i < result.size(); i++) {
+                        String liftId = result.get(i).getLiftId();
+                        String name = result.get(i).getLiftName();
+                        String status = result.get(i).getLiftStatus();
+                        String addr = result.get(i).getAddress();
+                        String createAt = result.get(i).getCreated_at();
+
+                        //todo DB에 저장 insert - thread 에서 처리해야함
+
+                        //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
+                        class InsertRunnable implements Runnable {
+                            @Override
+                            public void run() {
+                                //todo 값이 중첩되어 저장되는지 확인
+                                LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
 
 
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                    recycler.setLayoutManager(linearLayoutManager);
-                    recycler.setAdapter(liftRecyAdapter);
-                    // Recycler view item click event 처리
+                                // 값 전체 삭제
+                                //  LiftDB.getInstance(context).liftDao().deleteAll();
+                            }
+                        }
+                        InsertRunnable insertRunnable = new InsertRunnable();
+                        Thread t = new Thread(insertRunnable);
+                        t.start();
+                    }
+                    context.startActivity(new Intent(context, MainActivity.class));
+
 
                     Log.d("dataAll", "dataAll : ");
                 } else {
@@ -112,8 +125,8 @@ public class APIController {
     }
 
     public void UpdatedLiftList(String date) {
-            Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
-            call.enqueue(new Callback<ArrayList<LiftInfo>>() {
+        Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
+        call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
                 if (response.isSuccessful()) {
@@ -171,57 +184,22 @@ public class APIController {
     }
 
     public void WriteRepoLift(ReportList reportList) {
-        // ReportList reportList = new ReportList(10,"정상","김엔지니어/노후화된 전선 교체, 손잡이 교체작업");
-        //  Call<ReportList> call = liftInterface.SendReport(reportList);
-       // ReportList reportList = new ReportList(Integer.parseInt(liftId),  edContent.getText().toString(),tvDate.getText().toString());
-
         liftInterface.SendReport(reportList).enqueue(new Callback<ReportList>() {
             @Override
             public void onResponse(Call<ReportList> call, Response<ReportList> response) {
                 if (!response.isSuccessful()) {
-
                     Log.d("Test", "APIController - WriteRepoLift - error");
                     //  textViewResult.setText("code: " + response.code());
-
-                }else{
+                } else {
                     ReportList result = response.body();
                     Log.d("Test", "result : " + result.getReport_date());
-
                 }
             }
 
             @Override
             public void onFailure(Call<ReportList> call, Throwable t) {
-
             }
         });
 
-
-
-       /*
-        Call<ReportList> call = liftInterface.SendReport(reportList);
-        call.enqueue(new Callback<ReportList>() {
-            @Override
-            public void onResponse(Call<ReportList> call, Response<ReportList> response) {
-
-                if (!response.isSuccessful()) {
-
-                    Log.d("Test", "APIController - WriteRepoLift - error");
-                  //  textViewResult.setText("code: " + response.code());
-
-                }else{
-                    ReportList result = response.body();
-                    Log.d("Test", "result : " + result.getReport_date());
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReportList> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("retrofit", "ERROR");
-
-            }
-        });*/
     }
 }

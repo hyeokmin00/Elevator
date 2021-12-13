@@ -39,7 +39,7 @@ public class LiftInfo {
     }
 
 
-    @SerializedName("lift_address")
+    @SerializedName("address")
     @Expose
     private String address;
     public String getAddress() {
@@ -47,6 +47,16 @@ public class LiftInfo {
     }
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @SerializedName("created_at")
+    @Expose
+    private String created_at;
+    public String getCreated_at() {
+        return created_at;
+    }
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
 

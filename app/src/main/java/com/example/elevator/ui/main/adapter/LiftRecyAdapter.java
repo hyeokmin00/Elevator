@@ -13,49 +13,48 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.R;
 import com.example.elevator.api.model.LiftInfo;
+import com.example.elevator.api.roomdb.Lift;
+import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.ui.report.WriteReportActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
+//context or List가 아닌 DB 객체를 전달받아 사용함
+// 해당 RecyclerView api에서 바로 받아오는 것이 아니라 DB에 저장된 데이터를 가져와 출력하기 때문임
 
-public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
+public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.ui.main.adapter.LiftRecyAdapter.LiftViewHolder> {
 
-    ArrayList<LiftInfo> liftInfoInfoList;
+    private List<Lift> items = new ArrayList<>();
     Context context;
 
-    public LiftRecyAdapter(ArrayList<LiftInfo> liftInfoInfoList, Context context) {
-        this.liftInfoInfoList = liftInfoInfoList;
-        this.context = context;
+    public LiftRecyAdapter(List<Lift> items) {
+        this.items = items;
     }
 
     @Override
     public void onBindViewHolder(LiftViewHolder liftViewHolder, int position) {
-        final LiftInfo totalLiftInfoInfo = liftInfoInfoList.get(position);
+        final Lift totalLiftInfoInfo = items.get(position);
 
         liftViewHolder.tvId.setText(totalLiftInfoInfo.getLiftId());
-        liftViewHolder.tvName.setText(totalLiftInfoInfo.getLiftName());
-        liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getLiftStatus());
-        liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddress());
+        liftViewHolder.tvName.setText(totalLiftInfoInfo.getName());
+        liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getStatus());
+        liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddr());
         //  liftViewHolder.tvUpdate.setText(updatedAtDate);
 
 
         liftViewHolder.itemView.setOnClickListener((v) -> {
-            Toast.makeText(context,"승강기 id : " + liftInfoInfoList.get(position).getLiftId(), Toast.LENGTH_SHORT).show();
-          //  Log.d("Test", "승강기 id : " + liftInfoInfoList.get(position).getLiftId());
-            Log.d("Test", "LiftRecyAdapter - 승강기 id : " + liftInfoInfoList.get(position).getLiftId());
+            Log.d("Test", "LiftRecyAdapter - 승강기 id : " + items.get(position).getLiftId());
 
             Intent intent = new Intent(context, WriteReportActivity.class);
-            intent.putExtra("lift_id", liftInfoInfoList.get(position).getLiftId());
+            intent.putExtra("lift_id", items.get(position).getLiftId());
             context.startActivity(intent);
-
-           // intent.putExtra("text", );
-
         });
     }
 
     @Override
     public int getItemCount() {
-        return liftInfoInfoList.size();
+        return items.size();
     }
 
     private OnItemClickEventListener mItemClickListener;
@@ -100,13 +99,18 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
                     if (position != RecyclerView.NO_POSITION) {
                         itemClickListener.onItemClick(v, position);
                         Intent intent = new Intent(context, WriteReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    //    intent.putExtra("lift_id",liftInfoInfoList.get );
-
+                        //    intent.putExtra("lift_id",liftInfoInfoList.get );
 
                     }
                 }
             });
         }
+    }
+
+    //todo pullrefresh
+    public void setItem(List<Lift> data) {
+        items = data;
+        notifyDataSetChanged();
     }
 
 
