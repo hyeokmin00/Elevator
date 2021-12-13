@@ -2,6 +2,7 @@ package com.example.elevator.api;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.OnConflictStrategy;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.View;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.ErrorLift;
 import com.example.elevator.api.model.LiftInfo;
+import com.example.elevator.api.roomdb.Lift;
+import com.example.elevator.api.roomdb.LiftDB;
 
 
 import java.util.List;
@@ -27,12 +30,11 @@ public class APIController {
     //todo  response 후 wifi disable - lte 연결이 아닌 wifit 연결이 맞는지 확인 필요
 
 
-
-    private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
+    private ArrayList<Lift> liftInfoArrayList = new ArrayList<>();
     private ArrayList<ErrorLift> errorLiftArrayList = new ArrayList<>();
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
-
+    private LiftDB db = null;
 
 
     public void setRetrofitInit() {
@@ -46,18 +48,38 @@ public class APIController {
     }
 
     // 엘레베이터 전체 정보 전송받음
-    public void LiftList() {
+    // todo LiftDao 참고하여 Insert 동작
+    public void LiftList(Context context) {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorAllList();
+
         call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
                 if (response.isSuccessful()) {
 
+
                     ArrayList<LiftInfo> result = response.body();
-                    ArrayList<LiftInfo> totalLiftInfo = null;
 
-                    //todo sharedPref에 저장
+                    for (int i = 0; i < result.size(); i++) {
+                        String liftId = result.get(i).getLiftId();
+                        String name = result.get(i).getLiftName();
+                        String status = result.get(i).getLiftStatus();
+                        String addr = result.get(i).getAddress();
+                        String createAt = result.get(i).getCreated_at();
 
+                        //todo DB에 저장 insert - thread 에서 처리해야함
+
+                        //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
+                        class InsertRunnable implements Runnable{
+                            @Override
+                            public void run(){
+                                LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
+                            }
+                        }
+                        InsertRunnable insertRunnable = new InsertRunnable();
+                        Thread t = new Thread(insertRunnable);
+                        t.start();
+                    }
 
                     Log.d("dataAll", "dataAll : ");
                 } else {
@@ -94,8 +116,8 @@ public class APIController {
     }
 
     public void UpdatedLiftList(String date) {
-            Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
-            call.enqueue(new Callback<ArrayList<LiftInfo>>() {
+        Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
+        call.enqueue(new Callback<ArrayList<LiftInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
                 if (response.isSuccessful()) {
@@ -159,7 +181,7 @@ public class APIController {
                 if (!response.isSuccessful()) {
                     Log.d("Test", "APIController - WriteRepoLift - error");
                     //  textViewResult.setText("code: " + response.code());
-                }else{
+                } else {
                     ReportList result = response.body();
                     Log.d("Test", "result : " + result.getReport_date());
                 }

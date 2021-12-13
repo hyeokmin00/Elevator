@@ -26,26 +26,20 @@ public class MainActivity extends AppCompatActivity {
     //점검 내용 입력할 수 있는 화면으로 전환
 
     private LiftDB db;
-    APIController apiController = new APIController();
-    private ArrayList<LiftInfo> liftInfoArrayList = new ArrayList<>();
     Context context;
-
+    RecyclerView recycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        //LiftList 받아옴
-        RecyclerView recycler = findViewById(R.id.recyclerview);
-
+        recycler = findViewById(R.id.recyclerview);
         //todo RoodDB ListInfo 데이터 받아와 adapter에 값 넘겨주기
-
-
+        //db 객체 초기화
+        db = LiftDB.getInstance(this);
+        //db 넘겨줌
         LiftRecyAdapter liftRecyAdapter = new LiftRecyAdapter(db);
-
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(linearLayoutManager);
         recycler.setAdapter(liftRecyAdapter);

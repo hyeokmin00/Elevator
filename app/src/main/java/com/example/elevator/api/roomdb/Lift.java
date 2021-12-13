@@ -23,16 +23,16 @@ public class Lift {
     @ColumnInfo(name="addr")
     public String addr;
 
-    @ColumnInfo(name="updatedAt")
-    public String updatedAt;
+    @ColumnInfo(name="createAt")
+    public String createAt;
 
     public Lift(String liftId, String name, String status,
-                String addr, String updatedAt){
+                String addr, String createAt){
         this.liftId = liftId;
         this.name = name;
         this.status = status;
         this.addr = addr;
-        this.updatedAt = updatedAt;
+        this.createAt = createAt;
     }
     public int getId(){
         return id;
@@ -49,8 +49,8 @@ public class Lift {
     public String getAddr(){
         return addr;
     }
-    public String getUpdatedAt(){
-        return updatedAt;
+    public String getCreateAt(){
+        return createAt;
     }
 
 
@@ -69,8 +69,8 @@ public class Lift {
     public String setAddr(){
         return addr;
     }
-    public String setUpdatedAt(){
-        return updatedAt;
+    public String setCreatedAt(){
+        return createAt;
     }
 
 

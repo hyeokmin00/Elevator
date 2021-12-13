@@ -20,6 +20,8 @@ import com.example.elevator.ui.report.WriteReportActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+//context or List가 아닌 DB 객체를 전달받아 사용함
+// 해당 RecyclerView api에서 바로 받아오는 것이 아니라 DB에 저장된 데이터를 가져와 출력하기 때문임
 
 public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftViewHolder> {
 
@@ -49,7 +51,6 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
             Intent intent = new Intent(context, WriteReportActivity.class);
             intent.putExtra("lift_id", items.get(position).getLiftId());
             context.startActivity(intent);
-
         });
     }
 
@@ -102,12 +103,16 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<LiftRecyAdapter.LiftVi
                         Intent intent = new Intent(context, WriteReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     //    intent.putExtra("lift_id",liftInfoInfoList.get );
 
-
                     }
                 }
             });
         }
     }
 
+    //todo pullrefresh
+    public void setItem(List<Lift> data) {
+        items = data;
+        notifyDataSetChanged();
+    }
 
 }

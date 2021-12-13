@@ -1,5 +1,6 @@
 package com.example.elevator.ui.splash;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
     int TIMEOUT_LIMITS = 100;
     LiftRecyAdapter liftRecyAdapter;
     APIController apiController = new APIController();
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,17 @@ public class SplashActivity extends AppCompatActivity {
 
         //retrofitInit - Retrofit 객체 생성
         apiController.setRetrofitInit();
-        //현재 apiacontroller의 liftlist에서 바로 recycler뷰로 데이터 붙이게 되어있음
-        //해당 내용 시나리오에 맞춰 변경 필요
 
-        apiController.LiftList();
+
+
+
+
+
+
+        apiController.LiftList(context);
+
+
+        startActivity(new Intent(this, MainActivity.class));
 
 
 
