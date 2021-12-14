@@ -41,22 +41,24 @@ public class MainActivity extends AppCompatActivity {
         recycler = findViewById(R.id.recyclerview);
         //todo RoodDB ListInfo 데이터 받아와 adapter에 값 넘겨주기
         //db 객체 초기화
-        liftDb = LiftDB.getInstance(this);
+     //   liftDb = LiftDB.getInstance(this);
         //Main Thread에서 DB 접근 불가 -> Thread 이용
         context = this;
 
-        class InsertRunnable implements Runnable{
+        class GetAppRunnable implements Runnable{
             @Override
             public void run() {
-                liftList = liftDb.getInstance(context).liftDao().getAll();
-                LiftRecyAdapter liftRecyAdapter = new LiftRecyAdapter(liftList);
+                liftList = LiftDB.getInstance(context).getInstance(context).liftDao().getAll();
+
+                LiftRecyAdapter liftRecyAdapter = new LiftRecyAdapter(context, liftList);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                 recycler.setLayoutManager(linearLayoutManager);
                 recycler.setAdapter(liftRecyAdapter);
+
             }
         }
-        InsertRunnable insertRunnable = new InsertRunnable();
-        Thread t = new Thread(insertRunnable);
+        GetAppRunnable getAppRunnable = new GetAppRunnable();
+        Thread t = new Thread(getAppRunnable);
         t.start();
 
 

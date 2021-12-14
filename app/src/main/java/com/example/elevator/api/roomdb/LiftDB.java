@@ -25,6 +25,8 @@ public abstract class LiftDB extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             LiftDB.class, "liftdb.db")
+                            //기본 데이터를 버리고 다음 버전으로 넘어감
+                   //         .fallbackToDestructiveMigration()
                             .build();
                 }
             }

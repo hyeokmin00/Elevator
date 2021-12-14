@@ -37,9 +37,8 @@ public class WriteReportActivity extends AppCompatActivity {
     AppCompatButton send;
     Context context = this;
 
-    TextView tvLiftNum;
-
     public String liftId;
+    TextView tvLiftNum;
     EditText worker;
     EditText edContent;
     EditText edDate;
@@ -78,12 +77,8 @@ public class WriteReportActivity extends AppCompatActivity {
 
         // 작성 중이던 보고서가 없는 경우
         if(getStringArrayPref(context,REPORT) !=null){
-
             ArrayList<String> list = getStringArrayPref(context, REPORT);
-            //if ( list != null) {
-
             if (list.size() >= 1) {
-
                 liftId = list.get(0);
                 Toast.makeText(this, "이전에 작성된 보고서입니다.", Toast.LENGTH_SHORT).show();
                 Toast.makeText(this, "승강기 번호를 확인해주세요.", Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.R;
@@ -30,7 +31,8 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
     private List<Lift> items = new ArrayList<>();
     Context context;
 
-    public LiftRecyAdapter(List<Lift> items) {
+    public LiftRecyAdapter(Context context, List<Lift> items) {
+        this.context = context;
         this.items = items;
     }
 
@@ -56,6 +58,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
 
     @Override
     public int getItemCount() {
+
         return items.size();
     }
 
