@@ -2,17 +2,22 @@ package com.example.elevator.api.roomdb;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import java.net.InterfaceAddress;
 
 
 //Entity 정의
 @Entity(tableName = "Lift")
 public class Lift {
+
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public int id ;
 
     @ColumnInfo(name="liftId")
     public String liftId;
+
 
     @ColumnInfo(name="name")
     public String name;
@@ -26,7 +31,7 @@ public class Lift {
     @ColumnInfo(name="createAt")
     public String createAt;
 
-    public Lift(String liftId, String name, String status,
+    public Lift( String liftId, String name, String status,
                 String addr, String createAt){
         this.liftId = liftId;
         this.name = name;
@@ -69,7 +74,7 @@ public class Lift {
     public String setAddr(){
         return addr;
     }
-    public String setCreatedAt(){
+    public String setCreate(){
         return createAt;
     }
 

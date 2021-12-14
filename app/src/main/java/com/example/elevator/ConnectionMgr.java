@@ -25,9 +25,6 @@ public class ConnectionMgr extends AppCompatActivity {
     // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
     // wifi disable
 
-
-
-
     Context context;
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
@@ -35,7 +32,7 @@ public class ConnectionMgr extends AppCompatActivity {
     private ConnectivityManager.NetworkCallback networkCallback;
 
 
-    void enableWifi(String ssidPattern, String password) {
+    public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기긱의 ssid 반환
 
         OnCheckPermission();
@@ -90,6 +87,7 @@ public class ConnectionMgr extends AppCompatActivity {
         }
 
     }
+
     void disableWifi() {
         // wifi disable
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -114,7 +112,6 @@ public class ConnectionMgr extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "연결 끊김", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             } else
                 Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
 
@@ -123,6 +120,7 @@ public class ConnectionMgr extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
     public void OnCheckPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

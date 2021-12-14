@@ -32,6 +32,8 @@ dependencies {
     def room_version ="2.3.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+    //livedata
+    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
 
 
     //https://square.github.io/retrofit/
