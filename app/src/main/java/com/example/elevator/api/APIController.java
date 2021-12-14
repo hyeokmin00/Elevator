@@ -108,7 +108,6 @@ public class APIController {
                                     String createAt = result.get(i).getCreated_at();
 
                                     //todo DB에 저장 insert - thread 에서 처리해야함
-
                                     //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
                                     class InsertRunnable implements Runnable {
                                         @Override
