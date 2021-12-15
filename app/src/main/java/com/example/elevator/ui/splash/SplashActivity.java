@@ -3,21 +3,10 @@ package com.example.elevator.ui.splash;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.LinkProperties;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.ConnectionMgr;
 import com.example.elevator.R;
@@ -29,7 +18,6 @@ import com.example.elevator.utils.NetStat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class SplashActivity extends AppCompatActivity {
     // api 서버로부터 엘리베이터 데이터 요청 - sharedPreferences에 저장
@@ -44,10 +32,12 @@ public class SplashActivity extends AppCompatActivity {
     Context context;
     NetStat netStat;
     ConnectionMgr connectionMgr;
-    LiftDB liftdb ;
+    LiftDB liftdb;
     String date;
+    String today;
 
     static final String UPDATEDAT = "UPDATEDAT";
+    static final String LASTDATE = "LASTDATE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,42 +47,64 @@ public class SplashActivity extends AppCompatActivity {
         //sharedPref 에 date 저장하고 불러 올 때마다 날짜 갱신.
         //최초 실행이 아닌 경우 날짜가 갱신됨.
 
-        if (getUpdatedDate(UPDATEDAT) == null){
-         date = "1997-09-24";
-            Log.d("Test","SplashActivity - 승강기 목록 최초 갱신");
-
-        }else{
+        if (getUpdatedDate(UPDATEDAT) == null) {
+            date = "1997-09-24";
+            Log.d("Test", "SplashActivity - 승강기 목록 최초 갱신");
+        } else {
             date = getUpdatedDate(UPDATEDAT);
-            Log.d("Test","SplashActivity - 최종 갱신일 : " + date);
+            Log.d("Test", "SplashActivity - 최종 갱신일 : " + date);
         }
 
         Boolean wifiStat = netStat.isWIFIConnected(this);
         Boolean mobileStat = netStat.isMOBILEConnected(this);
 
+        //날짜 기본 값 : 오늘 날짜
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        today = sdf.format(dt);
+        Log.d("Test","Today == date"+ (today.toString()==date.toString()));
+        Log.d("Test","Today == date type"+ (today).length());
+        Log.d("Test","Today == date type"+ (date).length());
+        Log.d("Test","Today : "+today);
 
         //인터넷이 아예 연결되지 않은 경우
-        if(wifiStat == false & mobileStat == false){
+        if (!wifiStat & !mobileStat) {
             //화면 변경
             context.startActivity(new Intent(this, MainActivity.class));
-            Log.d("Test","인터넷 연결되지 않음 Stat == true");
+            Log.d("Test", "인터넷 연결되지 않음 Stat == true");
 
-        }else if(wifiStat == true){
+        } else if (wifiStat == true) {
             //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
             //connectionMgr.enableWifi();
             //아래 두 줄은 임시로 lte 연결이 된 경우에 실행되는 코드를 작성하였음
-            Log.d("Test","wifi Stat == true");
+            Log.d("Test", "wifi Stat == true");
 
-            apiController.setRetrofitInit();
-            apiController.UpdatedLiftList(this,date);
-            //날짜 기본 값 : 오늘 날짜
-           Date dt = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            putUpdatedDate(UPDATEDAT, sdf.format(dt));
+            if (date.equals(today)) {
+                context.startActivity(new Intent(context, MainActivity.class));
+                finish();
+            } else {
+                Log.d("Test", "today : " + today);
+                Log.d("Test", "date : " + date);
+                apiController.setRetrofitInit();
+                apiController.UpdatedLiftList(this, date);
+                finish();
+                putUpdatedDate(UPDATEDAT, sdf.format(dt));
+            }
+        } else {
+            Log.d("Test", "mobile Stat == true");
+          /*
 
-        }else{
-            Log.d("Test","mobile Stat == true");
-            apiController.setRetrofitInit();
-            apiController.UpdatedLiftList(this,date);
+
+
+
+
+
+               //최근 갱신일
+            if(date != today){
+                    apiController.setRetrofitInit();
+                    apiController.UpdatedLiftList(this,date);
+                    putUpdatedDate(UPDATEDAT, sdf.format(dt));
+            }*/
         }
     }
 

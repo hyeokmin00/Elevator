@@ -58,13 +58,13 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/item_total_updated_at"
+            android:id="@+id/item_total_created_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="updatedAt"
+            android:text="createdAt"
             android:textStyle="bold"
             android:textSize="15sp" />
     </LinearLayout>

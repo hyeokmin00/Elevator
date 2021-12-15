@@ -35,5 +35,4 @@ public interface LiftInterface {
     Call <ReportList> SendReport(@Body ReportList reportList);
            // @Body ReportList reportList);
 
-
 }

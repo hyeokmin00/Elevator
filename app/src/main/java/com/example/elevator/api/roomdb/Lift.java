@@ -42,9 +42,7 @@ public class Lift {
     public int getId(){
         return id;
     }
-    public String getLiftId(){
-        return liftId;
-    }
+    public String getLiftId(){return liftId; }
     public String getName(){
         return name;
     }
@@ -54,9 +52,7 @@ public class Lift {
     public String getAddr(){
         return addr;
     }
-    public String getCreateAt(){
-        return createAt;
-    }
+    public String getCreateAt(){return createAt;}
 
 
     public int setId(){

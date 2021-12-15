@@ -1,5 +1,6 @@
 package com.example.elevator.ui.main.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,7 +19,9 @@ import com.example.elevator.api.roomdb.Lift;
 import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.ui.report.WriteReportActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 //context or List가 아닌 DB 객체를 전달받아 사용함
@@ -38,11 +41,12 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
     public void onBindViewHolder(LiftViewHolder liftViewHolder, int position) {
         final Lift totalLiftInfoInfo = items.get(position);
 
+
         liftViewHolder.tvId.setText(totalLiftInfoInfo.getLiftId());
         liftViewHolder.tvName.setText(totalLiftInfoInfo.getName());
         liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getStatus());
         liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddr());
-        //  liftViewHolder.tvUpdate.setText(updatedAtDate);
+        liftViewHolder.tvUpdate.setText(totalLiftInfoInfo.getCreateAt().substring(0,10));
 
 
         liftViewHolder.itemView.setOnClickListener((v) -> {
