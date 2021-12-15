@@ -10,6 +10,8 @@ public class ReportList {
     @SerializedName("report_date")
     private String report_date;
 
+
+    //git push 
    public ReportList(int lift_id, String content, String report_date){
         this.lift_id = lift_id;
         this.content = content;
