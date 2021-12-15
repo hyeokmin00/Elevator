@@ -19,8 +19,11 @@ public class SockClient {
 	JSONObject obj = new JSONObject();
 	JSONArray objArray = new JSONArray();
 
-	void send(JSONObject obj){
+	public void send(JSONObject obj){
 		//Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
+		//todo 전송이 아닌 리턴값으로 변경해야함
+		//만들어진 객체 Error post api로 전송
+
 		try {
 			socket = new Socket(serverIp, port);
 			OutputStream os = socket.getOutputStream();
@@ -45,7 +48,7 @@ public class SockClient {
 		}
 	}
 
-	JSONObject recv() {
+	public JSONObject recv() {
 		// 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
 
 		int size = 1024;

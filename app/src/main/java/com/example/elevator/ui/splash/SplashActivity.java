@@ -12,6 +12,7 @@ import com.example.elevator.ConnectionMgr;
 import com.example.elevator.R;
 import com.example.elevator.api.APIController;
 import com.example.elevator.api.roomdb.LiftDB;
+import com.example.elevator.sock.SockClient;
 import com.example.elevator.ui.main.MainActivity;
 import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
 import com.example.elevator.utils.NetStat;
@@ -29,12 +30,15 @@ public class SplashActivity extends AppCompatActivity {
     int TIMEOUT_LIMITS = 100;
     LiftRecyAdapter liftRecyAdapter;
     APIController apiController = new APIController();
+    ConnectionMgr connectionMgr;
     Context context;
     NetStat netStat;
-    ConnectionMgr connectionMgr;
-    LiftDB liftdb;
+    SockClient sockClient;
+
     String date;
     String today;
+    String ssidPattern;
+    String password;
 
     static final String UPDATEDAT = "UPDATEDAT";
     static final String LASTDATE = "LASTDATE";
@@ -62,10 +66,6 @@ public class SplashActivity extends AppCompatActivity {
         Date dt = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         today = sdf.format(dt);
-        Log.d("Test","Today == date"+ (today.toString()==date.toString()));
-        Log.d("Test","Today == date type"+ (today).length());
-        Log.d("Test","Today == date type"+ (date).length());
-        Log.d("Test","Today : "+today);
 
         //인터넷이 아예 연결되지 않은 경우
         if (!wifiStat & !mobileStat) {
@@ -76,9 +76,45 @@ public class SplashActivity extends AppCompatActivity {
         } else if (wifiStat == true) {
             //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
             //connectionMgr.enableWifi();
-            //아래 두 줄은 임시로 lte 연결이 된 경우에 실행되는 코드를 작성하였음
             Log.d("Test", "wifi Stat == true");
 
+            //임시로 ssidPattern, pw 하드코딩함
+            ssidPattern = "CarKey";
+            password = "1234qqqq";
+
+            connectionMgr.enableWifi(ssidPattern, password);
+            sockClient.recv();
+
+            //todo json Object를 Array로 변환하는 과정 필요
+            //또는 해당 json Obj 바로 전송 가능한지 확인
+            
+            
+            //sockClient.send();
+
+
+
+            // apiController.ErrorPost();
+
+
+
+
+
+
+
+            //아래 코드는 임시로 lte 연결이 된 경우에 실행되는 코드를 작성하였음
+          /*  if (date.equals(today)) {
+                context.startActivity(new Intent(context, MainActivity.class));
+                finish();
+            } else {
+                Log.d("Test", "today : " + today);
+                Log.d("Test", "date : " + date);
+                apiController.setRetrofitInit();
+                apiController.UpdatedLiftList(this, date);
+                finish();
+                putUpdatedDate(UPDATEDAT, sdf.format(dt));
+            }*/
+        } else {
+            Log.d("Test", "mobile Stat == true");
             if (date.equals(today)) {
                 context.startActivity(new Intent(context, MainActivity.class));
                 finish();
@@ -90,21 +126,6 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
                 putUpdatedDate(UPDATEDAT, sdf.format(dt));
             }
-        } else {
-            Log.d("Test", "mobile Stat == true");
-          /*
-
-
-
-
-
-
-               //최근 갱신일
-            if(date != today){
-                    apiController.setRetrofitInit();
-                    apiController.UpdatedLiftList(this,date);
-                    putUpdatedDate(UPDATEDAT, sdf.format(dt));
-            }*/
         }
     }
 

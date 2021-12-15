@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.elevator.ConnectionMgr;
 import com.example.elevator.api.model.LiftResult;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.LiftError;
@@ -37,8 +38,7 @@ public class APIController {
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
     private LiftDB db = null;
-    SplashActivity splashActivity;
-
+    ConnectionMgr connectionMgr;
 
     public void setRetrofitInit() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -214,14 +214,10 @@ public class APIController {
                             Thread insertT = new Thread(insertRunnable);
                             insertT.start();
                         }
-
-                          // context.startActivity(new Intent(context, MainActivity.class));
                     }
-
                 }
                 context.startActivity(new Intent(context, MainActivity.class));
                 Log.d("dataAll", "dataAll : ");
-
             }
 
             @Override
@@ -252,6 +248,7 @@ public class APIController {
         });
     }
 
+
     public void ErrorPost(LiftError liftError) {
         Call<ArrayList<LiftError>> call = liftInterface.ErrorPost(liftError);
         call.enqueue(new Callback<ArrayList<LiftError>>() {
@@ -260,6 +257,9 @@ public class APIController {
                 if (response.isSuccessful()) {
                     ArrayList<LiftError> date = (ArrayList<LiftError>) response.body();
                     Log.d("ErrorPost", "res : " + date);
+
+                    connectionMgr.disableWifi();
+
                 }
             }
 

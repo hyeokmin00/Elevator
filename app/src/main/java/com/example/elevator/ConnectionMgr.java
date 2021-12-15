@@ -88,7 +88,7 @@ public class ConnectionMgr extends AppCompatActivity {
 
     }
 
-    void disableWifi() {
+    public void disableWifi() {
         // wifi disable
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
