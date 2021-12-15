@@ -75,7 +75,7 @@ public class ConnectionMgr extends AppCompatActivity {
             } else {
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
                 wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
-                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밂번호"); // 비밀번호
+                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밀번호"); // 비밀번호
                 int wifiId = wifiManager.addNetwork(wifiConfiguration);
                 wifiManager.enableNetwork(wifiId, true);
                 Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();

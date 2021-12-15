@@ -23,7 +23,6 @@ public class SockClient {
 		//Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
 		try {
 			socket = new Socket(serverIp, port);
-
 			OutputStream os = socket.getOutputStream();
 
 			byte cmd = (byte)obj.get("cmd");

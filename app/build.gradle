@@ -29,6 +29,10 @@ android {
 
 dependencies {
 
+    //lottie-animation - https://github.com/LottieFiles/lottie-android
+    def lottieVersion = "4.2.2"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
     def room_version ="2.3.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"

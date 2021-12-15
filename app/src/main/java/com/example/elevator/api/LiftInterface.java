@@ -1,11 +1,10 @@
 package com.example.elevator.api;
 
 import com.example.elevator.api.model.ReportList;
-import com.example.elevator.api.model.ErrorLift;
+import com.example.elevator.api.model.LiftError;
 import com.example.elevator.api.model.LiftInfo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,8 +27,8 @@ public interface LiftInterface {
     Call<ArrayList<LiftInfo>> UpdatedElevator (@Query("date") String date);
 
     @POST("posterr/") // 9
-    Call<ArrayList<ErrorLift>> ErrorPost(
-            @Body ErrorLift errorpost);
+    Call<ArrayList<LiftError>> ErrorPost(
+            @Body LiftError errorpost);
 
     @POST("postrepo/") // 12
     Call <ReportList> SendReport(@Body ReportList reportList);
