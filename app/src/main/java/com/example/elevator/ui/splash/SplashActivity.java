@@ -2,6 +2,7 @@ package com.example.elevator.ui.splash;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -26,6 +27,8 @@ import com.example.elevator.ui.main.MainActivity;
 import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
 import com.example.elevator.utils.NetStat;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class SplashActivity extends AppCompatActivity {
@@ -44,14 +47,24 @@ public class SplashActivity extends AppCompatActivity {
     LiftDB liftdb ;
     String date;
 
+    static final String UPDATEDAT = "UPDATEDAT";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         context = this;
+        //sharedPref 에 date 저장하고 불러 올 때마다 날짜 갱신.
+        //최초 실행이 아닌 경우 날짜가 갱신됨.
 
-        //todo sharedPref 에 date 저장하고 불러 올 때마다 날짜 갱신. 제일 처음 아니고서는 계속 갱신되도록 설정
-        date = "1997-09-24";
+        if (getUpdatedDate(UPDATEDAT) == null){
+         date = "1997-09-24";
+            Log.d("Test","SplashActivity - 승강기 목록 최초 갱신");
+
+        }else{
+            date = getUpdatedDate(UPDATEDAT);
+            Log.d("Test","SplashActivity - 최종 갱신일 : " + date);
+        }
 
         Boolean wifiStat = netStat.isWIFIConnected(this);
         Boolean mobileStat = netStat.isMOBILEConnected(this);
@@ -68,8 +81,13 @@ public class SplashActivity extends AppCompatActivity {
             //connectionMgr.enableWifi();
             //아래 두 줄은 임시로 lte 연결이 된 경우에 실행되는 코드를 작성하였음
             Log.d("Test","wifi Stat == true");
+
             apiController.setRetrofitInit();
             apiController.UpdatedLiftList(this,date);
+            //날짜 기본 값 : 오늘 날짜
+           Date dt = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            putUpdatedDate(UPDATEDAT, sdf.format(dt));
 
         }else{
             Log.d("Test","mobile Stat == true");
@@ -78,5 +96,17 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    //승강기 목록 갱신일 저장 sharedPref
+    private void putUpdatedDate(String key, String value) {
+        Log.d("Test", "Put " + key + " (value : " + value + " ) to " + UPDATEDAT);
+        SharedPreferences preferences = getSharedPreferences(UPDATEDAT, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
 
+    private String getUpdatedDate(String key) {
+        Log.d("Test", "Get " + key + " from " + UPDATEDAT);
+        return getSharedPreferences(UPDATEDAT, 0).getString(key, null);
+    }
 }

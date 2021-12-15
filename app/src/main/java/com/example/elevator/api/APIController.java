@@ -1,5 +1,6 @@
 package com.example.elevator.api;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -11,8 +12,11 @@ import com.example.elevator.api.model.LiftInfo;
 import com.example.elevator.api.roomdb.Lift;
 import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.ui.main.MainActivity;
+import com.example.elevator.ui.splash.SplashActivity;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,6 +38,7 @@ public class APIController {
     private ArrayList<ReportList> reportListArrayList = new ArrayList<>();
     private LiftInterface liftInterface;
     private LiftDB db = null;
+    SplashActivity splashActivity;
 
 
     public void setRetrofitInit() {
@@ -156,7 +161,9 @@ public class APIController {
         });
     }
 
+
     public void UpdatedLiftList(Context context, String date) {
+
         Call<LiftResult> call = liftInterface.UpdatedElevator(date);
         call.enqueue(new Callback<LiftResult>() {
             @Override
