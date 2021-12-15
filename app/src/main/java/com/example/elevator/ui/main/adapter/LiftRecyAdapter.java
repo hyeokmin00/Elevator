@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 //context or List가 아닌 DB 객체를 전달받아 사용함
 // 해당 RecyclerView api에서 바로 받아오는 것이 아니라 DB에 저장된 데이터를 가져와 출력하기 때문임
+
 
 public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.ui.main.adapter.LiftRecyAdapter.LiftViewHolder> {
 
