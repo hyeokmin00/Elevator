@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.elevator.api.model.LiftResult;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.LiftError;
 import com.example.elevator.api.model.LiftInfo;
@@ -79,8 +80,8 @@ public class APIController {
                         //데이터 개수에 변경 X인 경우 Main 화면으로
                         context.startActivity(new Intent(context, MainActivity.class));
 
-                    } else if (dbDataSize > 0) {
-                        //DB 값 전체 삭제
+                    } else {
+/*                        //DB 값 전체 삭제
                         class DeleteAllRunnable implements Runnable {
                             @Override
                             public void run() {
@@ -93,48 +94,48 @@ public class APIController {
                         Thread deleteT = new Thread(deleteAllRunnable);
                         deleteT.start();
                         Log.d("Test", "deleteAll Runnable 2 - db datasize = " + dbDataSize);
-                    } else {
-                            Log.d("Test", "deleteAll Runnable 3 - db datasize = " + dbDataSize);
-                            //DB의 값이 완전히 초기화 된 후에 for문을 통해 값을 반복함
-                            for (int i = 0; i < result.size(); i++) {
-                                String liftId = result.get(i).getLiftId();
-                                String name = result.get(i).getLiftName();
-                                String status = result.get(i).getLiftStatus();
-                                String addr = result.get(i).getAddress();
-                                String createAt = result.get(i).getCreated_at();
 
-                                //todo DB에 저장 insert - thread 에서 처리해야함
-                                //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
-                                class InsertRunnable implements Runnable {
-                                    @Override
-                                    public void run() {
-                                        // 값 전체 삭제
-                                        //   LiftDB.getInstance(context).liftDao().deleteAll();
-                                        // api로 받아온 data 전송
-                                        LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
-                                    }
+                        Log.d("Test", "deleteAll Runnable 3 - db datasize = " + dbDataSize);*/
+                        //DB의 값이 완전히 초기화 된 후에 for문을 통해 값을 반복함
+                        for (int i = 0; i < result.size(); i++) {
+                            String liftId = result.get(i).getLiftId();
+                            String name = result.get(i).getLiftName();
+                            String status = result.get(i).getLiftStatus();
+                            String addr = result.get(i).getAddress();
+                            String createAt = result.get(i).getCreated_at();
+
+                            //todo DB에 저장 insert - thread 에서 처리해야함
+                            //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
+                            class InsertRunnable implements Runnable {
+                                @Override
+                                public void run() {
+                                    // 값 전체 삭제
+                                    //   LiftDB.getInstance(context).liftDao().deleteAll();
+                                    // api로 받아온 data 전송
+                                    LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
                                 }
-                                InsertRunnable insertRunnable = new InsertRunnable();
-                                Thread insertT = new Thread(insertRunnable);
-                                insertT.start();
-                       //     context.startActivity(new Intent(context, MainActivity.class));
+                            }
+                            InsertRunnable insertRunnable = new InsertRunnable();
+                            Thread insertT = new Thread(insertRunnable);
+                            insertT.start();
+                            context.startActivity(new Intent(context, MainActivity.class));
                         }
 
+                    }
+
                 }
+                Log.d("dataAll", "dataAll : ");
 
             }
-                Log.d("dataAll","dataAll : ");
-
-        }
 
 
-        @Override
-        public void onFailure (Call < ArrayList < LiftInfo >> call, Throwable t){
-            t.printStackTrace();
-            Log.d("retrofit", "ERROR");
-        }
-    });
-}
+            @Override
+            public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("retrofit", "ERROR");
+            }
+        });
+    }
 
     public void UnitLiftInfo(int lift_id) {
         Call<ArrayList<LiftInfo>> call = liftInterface.getElevatorSelectList(lift_id);
@@ -155,19 +156,70 @@ public class APIController {
         });
     }
 
-    public void UpdatedLiftList(String date) {
-        Call<ArrayList<LiftInfo>> call = liftInterface.UpdatedElevator(date);
-        call.enqueue(new Callback<ArrayList<LiftInfo>>() {
+    public void UpdatedLiftList(Context context, String date) {
+        Call<LiftResult> call = liftInterface.UpdatedElevator(date);
+        call.enqueue(new Callback<LiftResult>() {
             @Override
-            public void onResponse(Call<ArrayList<LiftInfo>> call, Response<ArrayList<LiftInfo>> response) {
+            public void onResponse(Call<LiftResult>call, Response<LiftResult> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<LiftInfo> date = (ArrayList<LiftInfo>) response.body();
-                    Log.d("date", "date : " + date);
+                    LiftResult result = response.body();
+                    ArrayList<LiftInfo> liftinfo = result.getTotalLiftInfo();
+
+                    class CountingRunnable implements Runnable {
+                        @Override
+                        public void run() {
+                            //db에 접근하여 개수 확인
+                            dbDataSize = LiftDB.getInstance(context).liftDao().getAll().size();
+                            // 값 전체 삭제
+                            //  LiftDB.getInstance(context).liftDao().deleteAll();
+                        }
+                    }
+                    int apiDataSize = liftinfo.size();
+
+                    CountingRunnable countingRunnable = new CountingRunnable();
+                    Thread countThread = new Thread(countingRunnable);
+                    countThread.start();
+                    Log.d("Test", "deleteAll Runnable 1 - db datasize = " + dbDataSize);
+
+                    //개수 비교
+                    if (dbDataSize == apiDataSize) {
+                        //데이터 개수에 변경 X인 경우 Main 화면으로
+                        context.startActivity(new Intent(context, MainActivity.class));
+                    } else {
+                        for (int i = 0; i < liftinfo.size(); i++) {
+                            String liftId = liftinfo.get(i).getLiftId();
+                            String name = liftinfo.get(i).getLiftName();
+                            String status = liftinfo.get(i).getLiftStatus();
+                            String addr = liftinfo.get(i).getAddress();
+                            String createAt = liftinfo.get(i).getCreated_at();
+
+                            //todo DB에 저장 insert - thread 에서 처리해야함
+                            //DB는 mainThread 에서 접근 불가능함 -> Thread 이용해 접근해야함.
+                            class InsertRunnable implements Runnable {
+                                @Override
+                                public void run() {
+                                    // 값 전체 삭제
+                                    //   LiftDB.getInstance(context).liftDao().deleteAll();
+                                    // api로 받아온 data 전송
+                                    LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
+                                }
+                            }
+                            InsertRunnable insertRunnable = new InsertRunnable();
+                            Thread insertT = new Thread(insertRunnable);
+                            insertT.start();
+                        }
+
+                        //   context.startActivity(new Intent(context, MainActivity.class));
+                    }
+
                 }
+                context.startActivity(new Intent(context, MainActivity.class));
+                Log.d("dataAll", "dataAll : ");
+
             }
 
             @Override
-            public void onFailure(Call<ArrayList<LiftInfo>> call, Throwable t) {
+            public void onFailure(Call<LiftResult> call, Throwable t) {
                 t.printStackTrace();
                 Log.d("retrofit", "ERROR");
             }
@@ -225,6 +277,7 @@ public class APIController {
                     Log.d("Test", "result : " + result.getReport_date());
                 }
             }
+
             @Override
             public void onFailure(Call<ReportList> call, Throwable t) {
             }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class LiftResult {
 
-    @SerializedName("")
+    @SerializedName("content")
     @Expose
     private ArrayList<LiftInfo> liftInfo;
 

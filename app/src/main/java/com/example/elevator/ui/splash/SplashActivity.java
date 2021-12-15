@@ -42,12 +42,16 @@ public class SplashActivity extends AppCompatActivity {
     NetStat netStat;
     ConnectionMgr connectionMgr;
     LiftDB liftdb ;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         context = this;
+
+        //todo sharedPref 에 date 저장하고 불러 올 때마다 날짜 갱신. 제일 처음 아니고서는 계속 갱신되도록 설정
+        date = "1997-09-24";
 
         Boolean wifiStat = netStat.isWIFIConnected(this);
         Boolean mobileStat = netStat.isMOBILEConnected(this);
@@ -61,16 +65,16 @@ public class SplashActivity extends AppCompatActivity {
 
         }else if(wifiStat == true){
             //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
-         //   connectionMgr.enableWifi();
+            //connectionMgr.enableWifi();
             //아래 두 줄은 임시로 lte 연결이 된 경우에 실행되는 코드를 작성하였음
             Log.d("Test","wifi Stat == true");
             apiController.setRetrofitInit();
-            apiController.LiftList(this);
+            apiController.UpdatedLiftList(this,date);
 
         }else{
             Log.d("Test","mobile Stat == true");
             apiController.setRetrofitInit();
-            apiController.LiftList(this);
+            apiController.UpdatedLiftList(this,date);
         }
     }
 
