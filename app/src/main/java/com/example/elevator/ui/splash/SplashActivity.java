@@ -90,33 +90,45 @@ public class SplashActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         today = sdf.format(dt);
 
+        //todo elevator 연결
+        /*
+        ssidPattern = "CarKey";
+        password = "1234qqqq";
+        enableWifi(ssidPattern, password);
+
+
+
+        */
 
         if (date.equals(today)) {
             context.startActivity(new Intent(context, MainActivity.class));
             finish();
         } else {
-            ssidPattern = "CarKey";
-            password = "1234qqqq";
-            enableWifi(ssidPattern, password);
             if (wifiStat == true) {
                 //todo 와이파이 연결됨 -> 에러 데이터 전달함
                 Log.d("Test", "wifi Stat == true");
 
                 try {
                     JSONObject testObj = new JSONObject();
-                    testObj.put("cmd", (byte) 0x21);
-                    testObj.put("length", (byte) 0x06);
+                    testObj.put("cmd", (byte)0x21);
+                    testObj.put("length", (byte)0x06);
                     testObj.put("data", null);
 
-                    sockClient.send(testObj);
-                    JSONObject errorList = sockClient.recv();
-                    Log.d("Test", "SplashActivity - SockClient.recv return 1 : " + errorList);
-                } catch (JSONException | IOException e) {
+                    new Thread(() -> {
+                        try {
+                           // sockClient.send(testObj); // network 동작, 인터넷에서 xml을 받아오는 코드
+                            sockClient.send(); // network 동작, 인터넷에서 xml을 받아오는 코드
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d("Test", "SplashActivity - SockClient.recv catch");
 
                 }
-                disableWifi();
+    //            disableWifi();
                 //todo json Object를 Array로 변환하는 과정 필요
                 //또는 해당 json Obj 바로 전송 가능한지 확인
 
@@ -216,7 +228,6 @@ public class SplashActivity extends AppCompatActivity {
 
         try {
             if (wifiManager.isWifiEnabled()) {
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     connectivityManager.unregisterNetworkCallback(networkCallback);
                     Toast.makeText(getApplicationContext(), "연결 끊김", Toast.LENGTH_SHORT).show();
@@ -230,7 +241,7 @@ public class SplashActivity extends AppCompatActivity {
                         wifiManager.removeNetwork(networkId);
                         wifiManager.saveConfiguration();
                         wifiManager.disconnect();
-                        Toast.makeText(getApplicationContext(), "연결 끊김", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "연결 끊김 ", Toast.LENGTH_SHORT).show();
                     }
                 }
             } else
@@ -245,7 +256,7 @@ public class SplashActivity extends AppCompatActivity {
     public void OnCheckPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //사용자가 권한 요처을 명시적으로 거부한 경우 - true 처음 보거나 다시 묻지 않음 선택한 경우 false 반환
+            //사용자가 권한 요청을 명시적으로 거부한 경우 - true 처음 보거나 다시 묻지 않음 선택한 경우 false 반환
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Toast.makeText(this, "앱 실행을 위해서는 권한을 설정해야 합니다", Toast.LENGTH_LONG).show();
                 ActivityCompat.requestPermissions(this,

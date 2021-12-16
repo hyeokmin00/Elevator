@@ -20,18 +20,17 @@ public class SockClient {
     // 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
 
     final int port = 5000;
-    final String serverIp = "192.168.5.5";
+    final String serverIp = "192.168.5.4";
 
     Socket socket;
     JSONObject giveObj = new JSONObject();
     JSONObject obj = new JSONObject();
     JSONArray objArray = new JSONArray();
 
-    public void send(JSONObject obj) throws IOException {
+    //public void send(JSONObject obj) throws IOException {
+    public void send() throws IOException {
         //Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
-        //todo 전송이 아닌 리턴값으로 변경해야함
         //만들어진 객체 Error post api로 전송
-
 
         socket = new Socket();
         //socket = new Socket(serverIp, port);
@@ -39,30 +38,34 @@ public class SockClient {
 
         OutputStream os = socket.getOutputStream();
 
-        byte cmd = 0;
-        try {
-            cmd = (byte) obj.get("cmd");
-            byte length = (byte) obj.get("length");
+        byte cmd = 0x21;
+        byte length = 0x06;
+        /*  byte cmd = (byte) obj.get("cmd");
+            byte length = (byte) obj.get("length");*/
+           /* cmd = (byte) obj.get("cmd");
+            byte length = (byte) obj.get("length");*/
 
-            byte[] reqBuffer = new byte[7];
+        byte[] reqBuffer = new byte[7];
 
-            reqBuffer[0] = (byte) 0xA5; //STX_1
-            reqBuffer[1] = (byte) 0x5A; //STX_2
-            reqBuffer[2] = length; //length_Low
-            reqBuffer[3] = (byte) 0x00; //length_High
-            reqBuffer[4] = cmd; //Command
-            reqBuffer[5] = (byte) 0x46; //CRC_Low
-            reqBuffer[6] = (byte) 0xB1; //CRC_High
+        reqBuffer[0] = (byte) 0xA5; //STX_1
+        reqBuffer[1] = (byte) 0x5A; //STX_2
+        reqBuffer[2] = length; //length_Low
+        reqBuffer[3] = (byte) 0x00; //length_High
+        reqBuffer[4] = cmd; //Command
+        reqBuffer[5] = (byte) 0x46; //CRC_Low
+        reqBuffer[6] = (byte) 0xB1; //CRC_High
 
-            os.write(reqBuffer);
-            os.flush();
-            Log.d("Test", "Sock Client - os : " + os);
-            Log.d("Test", "Sock Client - os : " + os.toString());
+        os.write(reqBuffer);
+        os.flush();
+        Log.d("Test", "Sock Client - os : " + os);
+        Log.d("Test", "Sock Client - os : " + os.toString());
 
+        Log.d("Test", "SplashActivity - SockClient.recv return 1 : ");
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            JSONObject errorList = recv();
+            Log.d("Test", "SplashActivity - SockClient.recv return 2 : " + errorList);
+        }).start();
 
 
     }
