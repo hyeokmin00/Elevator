@@ -37,6 +37,9 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -87,53 +90,68 @@ public class SplashActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         today = sdf.format(dt);
 
-        //인터넷이 아예 연결되지 않은 경우
-        if (!wifiStat & !mobileStat) {
-            //화면 변경
-            context.startActivity(new Intent(this, MainActivity.class));
-            Log.d("Test", "인터넷 연결되지 않음 Stat == true");
-        } else {
-            //임시로 ssidPattern, pw 하드코딩함
-            //wifi 기기와 연결
-            ssidPattern = "CarKey";
-            password = "1234qqqq";
-            enableWifi(ssidPattern, password);
 
-            if (wifiStat == true) {
-                //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
-                Log.d("Test", "wifi Stat == true");
 
-                try {
-                    JSONObject testObj = new JSONObject();
-                    testObj.put("cmd", (byte) 0x21);
-                    testObj.put("length", (byte) 0x06);
-                    testObj.put("data", null);
-                    sockClient.send(testObj);
-                    JSONObject errorList = sockClient.recv();
-                    Log.d("Test", "SplashActivity - SockClient.recv return 1 : " + errorList);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        for(int j = 0; j<2;j++){
 
-                //  disableWifi();
-                //todo json Object를 Array로 변환하는 과정 필요
-                //또는 해당 json Obj 바로 전송 가능한지 확인
+            Log.d("Test", "SplashActivity - j : "+j);
 
+            //인터넷이 아예 연결되지 않은 경우
+            if (!wifiStat == !mobileStat) {
+                //화면 변경
+                //   context.startActivity(new Intent(this, MainActivity.class));
+                Log.d("Test", "인터넷 연결되지 않음 ");
             } else {
-                Log.d("Test", "mobile Stat == true");
-                if (date.equals(today)) {
-                    context.startActivity(new Intent(context, MainActivity.class));
-                    finish();
+                //임시로 ssidPattern, pw 하드코딩함
+                //wifi 기기와 연결
+                ssidPattern = "CarKey";
+                password = "1234qqqq";
+                enableWifi(ssidPattern, password);
+
+                if (wifiStat == true) {
+                    //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
+                    Log.d("Test", "wifi Stat == true");
+
+                    try {
+                        JSONObject testObj = new JSONObject();
+                        testObj.put("cmd", (byte) 0x21);
+                        testObj.put("length", (byte) 0x06);
+                        testObj.put("data", null);
+                        Log.d("Test", "SplashActivity - before");
+
+                        sockClient.send(testObj);
+                        Log.d("Test", "SplashActivity - after: ");
+
+                        JSONObject errorList = sockClient.recv();
+                        Log.d("Test", "SplashActivity - SockClient.recv return 1 : " + errorList);
+                    } catch (JSONException | IOException e) {
+                        e.printStackTrace();
+                        Log.d("Test", "SplashActivity - SockClient.recv catch");
+
+                    }
+                    disableWifi();
+                    //todo json Object를 Array로 변환하는 과정 필요
+                    //또는 해당 json Obj 바로 전송 가능한지 확인
+
                 } else {
-                    Log.d("Test", "today : " + today);
-                    Log.d("Test", "date : " + date);
-                    apiController.setRetrofitInit();
-                    apiController.UpdatedLiftList(this, date);
-                    finish();
-                    putUpdatedDate(UPDATEDAT, sdf.format(dt));
+                    Log.d("Test", "mobile Stat == true");
+
+                    if (date.equals(today)) {
+                        context.startActivity(new Intent(context, MainActivity.class));
+                        finish();
+                    } else {
+                        Log.d("Test", "today : " + today);
+                        Log.d("Test", "date : " + date);
+                        apiController.setRetrofitInit();
+                        apiController.UpdatedLiftList(this, date);
+                        finish();
+                        putUpdatedDate(UPDATEDAT, sdf.format(dt));
+                    }
                 }
+
             }
         }
+
     }
 
     //승강기 목록 갱신일 저장 sharedPref
@@ -157,6 +175,8 @@ public class SplashActivity extends AppCompatActivity {
 
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
+
+        Log.d("Test", "enable Wifi - 맨 위");
         OnCheckPermission();
         checkSystemPermission();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -190,8 +210,6 @@ public class SplashActivity extends AppCompatActivity {
                 };
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
                 connectivityManager.requestNetwork(networkRequest, networkCallback);
-
-
             } else {
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
                 wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID

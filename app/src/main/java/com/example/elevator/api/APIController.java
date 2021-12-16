@@ -208,6 +208,7 @@ public class APIController {
                                     //   LiftDB.getInstance(context).liftDao().deleteAll();
                                     // api로 받아온 data 전송
                                     LiftDB.getInstance(context).liftDao().insert(new Lift(liftId, name, status, addr, createAt));
+                                    Log.d("Test","APIController - addr : "+addr);
                                 }
                             }
                             InsertRunnable insertRunnable = new InsertRunnable();
@@ -223,7 +224,7 @@ public class APIController {
             @Override
             public void onFailure(Call<LiftResult> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit", "ERROR");
+                Log.d("Test", "ERROR");
             }
         });
     }
