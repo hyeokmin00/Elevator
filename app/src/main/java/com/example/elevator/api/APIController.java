@@ -218,7 +218,7 @@ public class APIController {
                     }
                 }
                 context.startActivity(new Intent(context, MainActivity.class));
-                Log.d("dataAll", "dataAll : ");
+                Log.d("Test", "dataAll : ");
             }
 
             @Override

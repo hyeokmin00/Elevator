@@ -39,32 +39,30 @@ public class SockClient {
 
         OutputStream os = socket.getOutputStream();
 
-		byte cmd = 0;
-		try {
-			cmd = (byte) obj.get("cmd");
-			byte length = (byte) obj.get("length");
+        byte cmd = 0;
+        try {
+            cmd = (byte) obj.get("cmd");
+            byte length = (byte) obj.get("length");
 
-			byte[] reqBuffer = new byte[7];
+            byte[] reqBuffer = new byte[7];
 
-			reqBuffer[0] = (byte) 0xA5; //STX_1
-			reqBuffer[1] = (byte) 0x5A; //STX_2
-			reqBuffer[2] = length; //length_Low
-			reqBuffer[3] = (byte) 0x00; //length_High
-			reqBuffer[4] = cmd; //Command
-			reqBuffer[5] = (byte) 0x46; //CRC_Low
-			reqBuffer[6] = (byte) 0xB1; //CRC_High
+            reqBuffer[0] = (byte) 0xA5; //STX_1
+            reqBuffer[1] = (byte) 0x5A; //STX_2
+            reqBuffer[2] = length; //length_Low
+            reqBuffer[3] = (byte) 0x00; //length_High
+            reqBuffer[4] = cmd; //Command
+            reqBuffer[5] = (byte) 0x46; //CRC_Low
+            reqBuffer[6] = (byte) 0xB1; //CRC_High
 
-			os.write(reqBuffer);
-			os.flush();
-			Log.d("Test", "Sock Client - os : " + os);
-			Log.d("Test", "Sock Client - os : " + os.toString());
-
-
+            os.write(reqBuffer);
+            os.flush();
+            Log.d("Test", "Sock Client - os : " + os);
+            Log.d("Test", "Sock Client - os : " + os.toString());
 
 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -89,7 +87,7 @@ public class SockClient {
         String time = "";
 
         try {
-            InputStream is = socket .getInputStream();
+            InputStream is = socket.getInputStream();
 
             byte[] recvBuffer = new byte[size];
             recvSize = is.read(recvBuffer);

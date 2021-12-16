@@ -1,6 +1,5 @@
 package com.example.elevator.ui.main.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -8,20 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elevator.R;
-import com.example.elevator.api.model.LiftInfo;
 import com.example.elevator.api.roomdb.Lift;
-import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.ui.report.WriteReportActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -29,12 +22,12 @@ import java.util.List;
 // 해당 RecyclerView api에서 바로 받아오는 것이 아니라 DB에 저장된 데이터를 가져와 출력하기 때문임
 
 
-public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.ui.main.adapter.LiftRecyAdapter.LiftViewHolder> {
+public class LiftRecyHorizontalAdapter extends RecyclerView.Adapter<LiftRecyHorizontalAdapter.LiftViewHolder> {
 
     private List<Lift> items = new ArrayList<>();
     Context context;
 
-    public LiftRecyAdapter(Context context, List<Lift> items) {
+    public LiftRecyHorizontalAdapter(Context context, List<Lift> items) {
         this.context = context;
         this.items = items;
     }
@@ -46,6 +39,10 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
 
         liftViewHolder.tvId.setText(totalLiftInfoInfo.getLiftId());
         liftViewHolder.tvName.setText(totalLiftInfoInfo.getName());
+        liftViewHolder.tvStatus.setText(totalLiftInfoInfo.getStatus());
+        liftViewHolder.tvAddress.setText(totalLiftInfoInfo.getAddr());
+        liftViewHolder.tvUpdate.setText(totalLiftInfoInfo.getCreateAt().substring(0,10));
+
 
         liftViewHolder.itemView.setOnClickListener((v) -> {
             Log.d("Test", "LiftRecyAdapter - 승강기 id : " + items.get(position).getLiftId());
@@ -66,7 +63,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
 
     @Override
     public LiftViewHolder onCreateViewHolder(ViewGroup viewGroup, int a_viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_total_lift, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_total_lift_horizontal, viewGroup, false);
         return new LiftViewHolder(view, mItemClickListener);
     }
 
@@ -82,14 +79,20 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
     public class LiftViewHolder extends RecyclerView.ViewHolder {
         TextView tvId;
         TextView tvName;
+        TextView tvStatus;
+        TextView tvAddress;
+        TextView tvUpdate;
 
         public LiftViewHolder(View itemView,
                               final OnItemClickEventListener itemClickListener) {
 
             super(itemView);
 
-            tvId = (TextView) itemView.findViewById(R.id.item_total_id);
-            tvName = (TextView) itemView.findViewById(R.id.item_total_name);
+            tvId = (TextView) itemView.findViewById(R.id.item_horizontal_total_id);
+            tvName = (TextView) itemView.findViewById(R.id.item_horizontal_total_name);
+            tvStatus = (TextView) itemView.findViewById(R.id.item_horizontal_total_status);
+            tvAddress = (TextView) itemView.findViewById(R.id.item_horizontal_total_address);
+            tvUpdate = (TextView) itemView.findViewById(R.id.item_horizontal_total_updated_at);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
