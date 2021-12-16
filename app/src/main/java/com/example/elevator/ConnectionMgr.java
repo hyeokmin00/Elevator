@@ -35,11 +35,6 @@ public class ConnectionMgr extends AppCompatActivity {
     private ConnectivityManager.NetworkCallback networkCallback;
 
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
 

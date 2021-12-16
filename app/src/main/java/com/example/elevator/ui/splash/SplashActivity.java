@@ -92,46 +92,46 @@ public class SplashActivity extends AppCompatActivity {
             //화면 변경
             context.startActivity(new Intent(this, MainActivity.class));
             Log.d("Test", "인터넷 연결되지 않음 Stat == true");
-
-        } else if (wifiStat == true) {
-            //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
-            //connectionMgr.enableWifi();
-            Log.d("Test", "wifi Stat == true");
-
+        } else {
             //임시로 ssidPattern, pw 하드코딩함
+            //wifi 기기와 연결
             ssidPattern = "CarKey";
             password = "1234qqqq";
+            enableWifi(ssidPattern, password);
 
-            JSONObject testObj = new JSONObject();
-            try {
-                testObj.put("cmd", 0x21);
-                testObj.put("length", 0x06);
-                testObj.put("data", null);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            if (wifiStat == true) {
+                //todo 와이파이 연결됨 -> 에러 데이터 포스트로 전달함
+                Log.d("Test", "wifi Stat == true");
 
-            enableWifi( ssidPattern, password);
-            sockClient.send(testObj);
-            JSONObject errorList = sockClient.recv();
+                try {
+                    JSONObject testObj = new JSONObject();
+                    testObj.put("cmd", (byte) 0x21);
+                    testObj.put("length", (byte) 0x06);
+                    testObj.put("data", null);
+                    sockClient.send(testObj);
+                    JSONObject errorList = sockClient.recv();
+                    Log.d("Test", "SplashActivity - SockClient.recv return 1 : " + errorList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-            Log.d("Test","SplashActivity - SockClient.recv return : "+errorList);
+                //  disableWifi();
+                //todo json Object를 Array로 변환하는 과정 필요
+                //또는 해당 json Obj 바로 전송 가능한지 확인
 
-            //todo json Object를 Array로 변환하는 과정 필요
-            //또는 해당 json Obj 바로 전송 가능한지 확인
-
-        } else {
-            Log.d("Test", "mobile Stat == true");
-            if (date.equals(today)) {
-                context.startActivity(new Intent(context, MainActivity.class));
-                finish();
             } else {
-                Log.d("Test", "today : " + today);
-                Log.d("Test", "date : " + date);
-                apiController.setRetrofitInit();
-                apiController.UpdatedLiftList(this, date);
-                finish();
-                putUpdatedDate(UPDATEDAT, sdf.format(dt));
+                Log.d("Test", "mobile Stat == true");
+                if (date.equals(today)) {
+                    context.startActivity(new Intent(context, MainActivity.class));
+                    finish();
+                } else {
+                    Log.d("Test", "today : " + today);
+                    Log.d("Test", "date : " + date);
+                    apiController.setRetrofitInit();
+                    apiController.UpdatedLiftList(this, date);
+                    finish();
+                    putUpdatedDate(UPDATEDAT, sdf.format(dt));
+                }
             }
         }
     }
@@ -151,37 +151,26 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
-
         OnCheckPermission();
         checkSystemPermission();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (!wifiManager.isWifiEnabled()) {
                 wifiManager.setWifiEnabled(true);
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                 WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
-                builder.setSsidPattern(new PatternMatcher(ssidPattern,PatternMatcher.PATTERN_PREFIX));
+                builder.setSsidPattern(new PatternMatcher(ssidPattern, PatternMatcher.PATTERN_PREFIX));
                 builder.setWpa2Passphrase(password);
 
                 WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
@@ -199,7 +188,6 @@ public class SplashActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
                     }
                 };
-
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
                 connectivityManager.requestNetwork(networkRequest, networkCallback);
 
@@ -223,7 +211,7 @@ public class SplashActivity extends AppCompatActivity {
     public void disableWifi() {
         // wifi disable
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (wifiManager.isWifiEnabled()) {
@@ -299,12 +287,11 @@ public class SplashActivity extends AppCompatActivity {
             }
         } else {
 
-            Log.d("Test","ConnectionMgr - checkSysPermission");
+            Log.d("Test", "ConnectionMgr - checkSysPermission");
         }
 
         return permission;
     }
-
 
 
 }

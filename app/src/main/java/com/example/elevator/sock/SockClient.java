@@ -1,5 +1,10 @@
 package com.example.elevator.sock;
 
+import android.util.Log;
+
+import com.example.elevator.ConnectionMgr;
+import com.example.elevator.ui.splash.SplashActivity;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -14,6 +19,8 @@ public class SockClient {
 	final int port = 5000;
 	final String serverIp = "192.168.5.5";
 
+
+
 	Socket socket;
 	JSONObject giveObj = new JSONObject();
 	JSONObject obj = new JSONObject();
@@ -23,7 +30,6 @@ public class SockClient {
 		//Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
 		//todo 전송이 아닌 리턴값으로 변경해야함
 		//만들어진 객체 Error post api로 전송
-
 		try {
 			socket = new Socket(serverIp, port);
 			OutputStream os = socket.getOutputStream();
@@ -43,6 +49,10 @@ public class SockClient {
 
 			os.write(reqBuffer);
 			os.flush();
+			Log.d("Test","Sock Client - os : "+os);
+			Log.d("Test","Sock Client - os : "+os.toString());
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,6 +125,10 @@ public class SockClient {
 					JSONObject obj = new JSONObject();
 					obj.put("datetime",datetime);
 					obj.put("code", code);
+					Log.d("Test","SockClient - datetime : "+datetime);
+					Log.d("Test","SockClient - code : "+code);
+
+
 					objArray.put(obj);
 				}
 
