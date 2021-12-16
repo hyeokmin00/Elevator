@@ -9,9 +9,7 @@ public class LiftInfo {
     @SerializedName("lift_id")
     @Expose
     private String liftId;
-    public String getLiftId() {
-        return liftId;
-    }
+    public String getLiftId() {  return liftId;  }
     public void setLiftId(String liftId) {
         this.liftId = liftId;
     }

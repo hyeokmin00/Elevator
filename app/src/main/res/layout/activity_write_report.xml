@@ -16,20 +16,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="승강기 번호 : "
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <View
+        android:id="@+id/write_div1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e2e2e2"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/write_tv_lift_id"
+        />
     <TextView
         android:id="@+id/write_tv_worker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="작업자"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/write_tv_lift_id"
+        app:layout_constraintTop_toBottomOf="@id/write_div1"
 
         />
 
@@ -45,17 +57,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/write_tv_worker"
         app:layout_constraintTop_toTopOf="@id/write_tv_worker" />
-
+    <View
+        android:id="@+id/write_div2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e2e2e2"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/write_tv_worker"
+        />
 
     <TextView
         android:id="@+id/write_tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="점검 내용"
+        android:textColor="@color/black"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/write_tv_worker"
+        app:layout_constraintTop_toBottomOf="@id/write_div2"
 
         />
 
@@ -68,8 +89,10 @@
         app:layout_constraintTop_toBottomOf="@id/write_tv_content"
         app:layout_constraintBottom_toTopOf="@id/write_tv_date"
         android:layout_marginTop="10dp"
-        android:background="@android:color/transparent"
+        android:background="@drawable/rd_write_repo_content"
         android:hint="작성 내용"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
         android:textColor="@color/black"
         android:textSize="16sp"
         />
@@ -80,7 +103,10 @@
         android:layout_height="wrap_content"
         android:text="작업 날짜"
         android:textSize="16sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toBottomOf="@id/write_ed_content"
         app:layout_constraintBottom_toTopOf="@id/write_btn_send"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -103,8 +129,9 @@
         app:layout_constraintTop_toTopOf="@id/write_ed_date"
         app:layout_constraintBottom_toBottomOf="@id/write_ed_date"
         app:layout_constraintDimensionRatio="1:1"
-        android:layout_marginStart="10dp"
-        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitXY"
+        android:layout_marginHorizontal="10dp"
+        android:src="@drawable/ic_calendar"
         app:layout_constraintStart_toEndOf="@id/write_ed_date"
         />
 
@@ -117,6 +144,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="등록"
+        android:textStyle="bold"
         />
 
 

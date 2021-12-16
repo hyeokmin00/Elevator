@@ -1,6 +1,8 @@
 package com.example.elevator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -17,15 +19,16 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ConnectionMgr extends AppCompatActivity {
+
     // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
     // wifi disable
-
-    Context context;
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
@@ -33,13 +36,12 @@ public class ConnectionMgr extends AppCompatActivity {
 
 
     public void enableWifi(String ssidPattern, String password) {
-        // 와이파이 사용가능하게 하고 연결된 wifi 기긱의 ssid 반환
+        // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
 
         OnCheckPermission();
         checkSystemPermission();
-
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (!wifiManager.isWifiEnabled()) {
@@ -75,7 +77,7 @@ public class ConnectionMgr extends AppCompatActivity {
             } else {
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
                 wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
-                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밂번호"); // 비밀번호
+                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밀번호"); // 비밀번호
                 int wifiId = wifiManager.addNetwork(wifiConfiguration);
                 wifiManager.enableNetwork(wifiId, true);
                 Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
@@ -88,10 +90,10 @@ public class ConnectionMgr extends AppCompatActivity {
 
     }
 
-    void disableWifi() {
+    public void disableWifi() {
         // wifi disable
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (wifiManager.isWifiEnabled()) {
@@ -124,6 +126,7 @@ public class ConnectionMgr extends AppCompatActivity {
     public void OnCheckPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //사용자가 권한 요처을 명시적으로 거부한 경우 - true 처음 보거나 다시 묻지 않음 선택한 경우 false 반환
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Toast.makeText(this, "앱 실행을 위해서는 권한을 설정해야 합니다", Toast.LENGTH_LONG).show();
                 ActivityCompat.requestPermissions(this,
@@ -166,6 +169,7 @@ public class ConnectionMgr extends AppCompatActivity {
             }
         } else {
 
+            Log.d("Test","ConnectionMgr - checkSysPermission");
         }
 
         return permission;

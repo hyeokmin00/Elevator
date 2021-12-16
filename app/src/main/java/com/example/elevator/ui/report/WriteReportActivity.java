@@ -27,7 +27,9 @@ import com.example.elevator.api.model.ReportList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Retrofit;
 
@@ -64,11 +66,17 @@ public class WriteReportActivity extends AppCompatActivity {
         edWorker = findViewById(R.id.write_ed_worker);
 
 
+
+
         Intent intent = getIntent();
         //String liftId = intent.getStringExtra("lift_id");
         liftId = intent.getStringExtra("lift_id");
-
         tvLiftNum.setText("승강기 번호 : " + liftId);
+
+        //날짜 기본 값 : 오늘 날짜
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        edDate.setText(sdf.format(dt));
 
 
         //저장된 sharpref 가져옴
@@ -89,8 +97,9 @@ public class WriteReportActivity extends AppCompatActivity {
             }
         }
 
-
-        // todo send Btn 클릭 시 전송됨 - 인터넷 연결 시 api 사용해 전송, 아닐 시 sharedPreferences에 저장
+        edContent.getText();
+        // send Btn 클릭 시 전송됨 - 인터넷 연결 시 api 사용해 전송, 아닐 시 sharedPreferences에 저장
+        // 해당 내용 isConnected에서 제어
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +109,7 @@ public class WriteReportActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
 
@@ -120,9 +130,7 @@ public class WriteReportActivity extends AppCompatActivity {
             @Override
             public void onAvailable(@NonNull Network network) {
                 // 네트워크를 사용할 준비가 되었을 때
-
                 SendReport(context, reportList);
-
             }
 
             @Override
@@ -134,7 +142,7 @@ public class WriteReportActivity extends AppCompatActivity {
         });
     }
 
-    //todo onDestroy 시 sharedPreference에 작업자 이름 저장.
+    //onDestroy 시 sharedPreference에 작업자 이름 저장.
     //todo 이름, 작업 내용, lift id, 날짜 저장
 
     public void setReportPref(String liftId, String content, String date) {
