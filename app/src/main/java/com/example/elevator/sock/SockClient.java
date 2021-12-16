@@ -20,15 +20,15 @@ public class SockClient {
     // 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
 
     final int port = 5000;
-    final String serverIp = "192.168.5.4";
+    final String serverIp = "192.168.5.5";
 
     Socket socket;
     JSONObject giveObj = new JSONObject();
     JSONObject obj = new JSONObject();
     JSONArray objArray = new JSONArray();
 
-    //public void send(JSONObject obj) throws IOException {
-    public void send() throws IOException {
+    //public void send() throws IOException {
+    public void send(JSONObject testObj) throws IOException {
         //Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
         //만들어진 객체 Error post api로 전송
 

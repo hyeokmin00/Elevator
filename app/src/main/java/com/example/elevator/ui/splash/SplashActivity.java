@@ -24,22 +24,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.elevator.ConnectionMgr;
 import com.example.elevator.R;
 import com.example.elevator.api.APIController;
-import com.example.elevator.api.roomdb.LiftDB;
 import com.example.elevator.sock.SockClient;
 import com.example.elevator.ui.main.MainActivity;
-import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
 import com.example.elevator.utils.NetStat;
-import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,10 +43,7 @@ public class SplashActivity extends AppCompatActivity {
 
     //날짜 default 값은 오늘 날짜 불러옴. 그 외에는 사용자가 입력하여 변경 가능하나
     // 해당 부분 타임피커 이용한 변경권장
-    int TIMEOUT_LIMITS = 100;
-    LiftRecyAdapter liftRecyAdapter;
     APIController apiController = new APIController();
-    ConnectionMgr connectionMgr = new ConnectionMgr();
     Context context = this;
     NetStat netStat = new NetStat();
     SockClient sockClient = new SockClient();
@@ -63,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
     String ssidPattern;
     String password;
 
-    static final String UPDATEDAT = "UPDATEDAT";
+    static final String UPDATEDATE = "UPDATEDATE";
     static final String LASTDATE = "LASTDATE";
 
     @Override
@@ -73,12 +63,11 @@ public class SplashActivity extends AppCompatActivity {
         context = this;
         //sharedPref 에 date 저장하고 불러 올 때마다 날짜 갱신.
         //최초 실행이 아닌 경우 날짜가 갱신됨.
-
-        if (getUpdatedDate(UPDATEDAT) == null) {
+        if (getUpdatedDate(UPDATEDATE) == null) {
             date = "1997-09-24";
             Log.d("Test", "SplashActivity - 승강기 목록 최초 갱신");
         } else {
-            date = getUpdatedDate(UPDATEDAT);
+            date = getUpdatedDate(UPDATEDATE);
             Log.d("Test", "SplashActivity - 최종 갱신일 : " + date);
         }
 
@@ -90,34 +79,33 @@ public class SplashActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         today = sdf.format(dt);
 
-        //todo elevator 연결
-        /*
-        ssidPattern = "CarKey";
+        //wifi 기기와 연결 - 기기가 하나뿐이라 임시로 하드 코딩함
+        
+        //todo wifi permission 관련 코드 로직 확인 필요
+        //todo wifi 기기와 연결 후 error code 수신 -> DB data와 api data 개수 확인 후 화면 전환
+        // -> 기기의 id가 dummydata와 일치하지 않아 임시로 맨 처음 화면에서 동일한 지 확인함
+      /*  ssidPattern = "CarKey";
         password = "1234qqqq";
         enableWifi(ssidPattern, password);
-
-
-
-        */
-
+*/
+        //최종 갱신일과 오늘 날짜가 동일한 경우 DB 갱신 없이 승강기 목록으로 이동
         if (date.equals(today)) {
+            //todo 최초 실행시 Activity 스택관리 안 됨
             context.startActivity(new Intent(context, MainActivity.class));
             finish();
         } else {
             if (wifiStat == true) {
-                //todo 와이파이 연결됨 -> 에러 데이터 전달함
                 Log.d("Test", "wifi Stat == true");
-
                 try {
                     JSONObject testObj = new JSONObject();
-                    testObj.put("cmd", (byte)0x21);
-                    testObj.put("length", (byte)0x06);
+                    testObj.put("cmd", (byte) 0x21);
+                    testObj.put("length", (byte) 0x06);
                     testObj.put("data", null);
 
                     new Thread(() -> {
                         try {
-                           // sockClient.send(testObj); // network 동작, 인터넷에서 xml을 받아오는 코드
-                            sockClient.send(); // network 동작, 인터넷에서 xml을 받아오는 코드
+                            sockClient.send(testObj); // network 동작, 인터넷에서 xml을 받아오는 코드
+                            //   sockClient.send(); // network 동작, 인터넷에서 xml을 받아오는 코드
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -126,16 +114,15 @@ public class SplashActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d("Test", "SplashActivity - SockClient.recv catch");
-
                 }
-    //            disableWifi();
+                disableWifi();
                 //todo json Object를 Array로 변환하는 과정 필요
                 //또는 해당 json Obj 바로 전송 가능한지 확인
 
-            } else if(mobileStat == true) {
+            } else if (mobileStat == true) {
                 if (date.equals(today)) {
                     context.startActivity(new Intent(context, MainActivity.class));
-                    //   finish();
+                    finish();
                 } else {
                     Log.d("Test", "mobile Stat == true");
                     Log.d("Test", "today : " + today);
@@ -143,7 +130,7 @@ public class SplashActivity extends AppCompatActivity {
                     apiController.setRetrofitInit();
                     apiController.UpdatedLiftList(this, date);
                     finish();
-                    putUpdatedDate(UPDATEDAT, sdf.format(dt));
+                    putUpdatedDate(UPDATEDATE, sdf.format(dt));
                 }
             }
         }
@@ -151,18 +138,17 @@ public class SplashActivity extends AppCompatActivity {
 
     //승강기 목록 갱신일 저장 sharedPref
     private void putUpdatedDate(String key, String value) {
-        Log.d("Test", "Put " + key + " (value : " + value + " ) to " + UPDATEDAT);
-        SharedPreferences preferences = getSharedPreferences(UPDATEDAT, MODE_PRIVATE);
+        Log.d("Test", "Put " + key + " (value : " + value + " ) to " + UPDATEDATE);
+        SharedPreferences preferences = getSharedPreferences(UPDATEDATE, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
     private String getUpdatedDate(String key) {
-        Log.d("Test", "Get " + key + " from " + UPDATEDAT);
-        return getSharedPreferences(UPDATEDAT, 0).getString(key, null);
+        Log.d("Test", "Get " + key + " from " + UPDATEDATE);
+        return getSharedPreferences(UPDATEDATE, 0).getString(key, null);
     }
-
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
@@ -170,8 +156,6 @@ public class SplashActivity extends AppCompatActivity {
 
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
-
-        Log.d("Test", "enable Wifi - 맨 위");
         OnCheckPermission();
         checkSystemPermission();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -187,7 +171,6 @@ public class SplashActivity extends AppCompatActivity {
                 WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
                 builder.setSsidPattern(new PatternMatcher(ssidPattern, PatternMatcher.PATTERN_PREFIX));
                 builder.setWpa2Passphrase(password);
-
                 WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
 
                 final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
@@ -202,10 +185,14 @@ public class SplashActivity extends AppCompatActivity {
                         connectivityManager.bindProcessToNetwork(network);
                         Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
                     }
+                    @Override public void onUnavailable() {
+                        Log.d("Test", "SplashActivity - Enabled : onUnavailable");
+                    }
                 };
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
                 connectivityManager.requestNetwork(networkRequest, networkCallback);
             } else {
+                Log.d("Test", "SplashActivity - Enabled : onUnavailable");
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
                 wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
                 wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밀번호"); // 비밀번호
@@ -213,12 +200,10 @@ public class SplashActivity extends AppCompatActivity {
                 wifiManager.enableNetwork(wifiId, true);
                 Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "연결 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void disableWifi() {
@@ -286,7 +271,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public boolean checkSystemPermission() {
-
         boolean permission = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   //23버전 이상
             permission = Settings.System.canWrite(this);
@@ -298,12 +282,8 @@ public class SplashActivity extends AppCompatActivity {
                 permission = false;
             }
         } else {
-
             Log.d("Test", "ConnectionMgr - checkSysPermission");
         }
-
         return permission;
     }
-
-
 }
