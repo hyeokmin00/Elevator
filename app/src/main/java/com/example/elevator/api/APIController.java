@@ -259,7 +259,6 @@ public class APIController {
                     Log.d("ErrorPost", "res : " + date);
 
                     connectionMgr.disableWifi();
-
                 }
             }
 
