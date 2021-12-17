@@ -58,7 +58,6 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
 
     @Override
     public int getItemCount() {
-
         return items.size();
     }
 

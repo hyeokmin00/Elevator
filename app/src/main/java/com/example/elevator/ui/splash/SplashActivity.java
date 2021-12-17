@@ -1,5 +1,7 @@
 package com.example.elevator.ui.splash;
 
+import static java.lang.Thread.sleep;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -89,38 +91,21 @@ public class SplashActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
         enableWifi(ssidPattern, password);
-        //todo errorPost(socket에서 값을 받아 온 것이 아닌 임의의 값을 넣어 api작동을 확인함)
-      //  context.startActivity(new Intent(context, SocketActivity.class));
+        context.startActivity(new Intent(context, SocketActivity.class));
 
         //최종 갱신일과 오늘 날짜가 동일한 경우 DB 갱신 없이 승강기 목록으로 이동
-/*        if (date.equals(today)) {
-            //todo 최초 실행시 Activity 스택관리 안 됨
+        if (date.equals(today)) {
+            Log.d("Test", "date == today -> ");
             context.startActivity(new Intent(context, MainActivity.class));
             finish();
-        } else {*/
-
-/*
-        if (wifiStat) {
-            Log.d("Test", "wifiStat Stat == true");
-            context.startActivity(new Intent(context, SocketActivity.class));
-            //todo json Object를 Array로 변환하는 과정 필요
-            //또는 해당 json Obj 바로 전송 가능한지 확인
-        } else if (mobileStat) {
-            if (date.equals(today)) {
-                Log.d("Test", "date == today -> ");
-                context.startActivity(new Intent(context, MainActivity.class));
-                finish();
-            } else {
-                Log.d("Test", "mobile Stat == true");
-                Log.d("Test", "today : " + today);
-                Log.d("Test", "date : " + date);
-                apiController.setRetrofitInit();
-                apiController.UpdatedLiftList(this, date);
-                putUpdatedDate(UPDATEDATE, sdf.format(dt));
-            }
-        }*/
+        } else {
+            Log.d("Test", "mobile Stat == true");
+            apiController.setRetrofitInit();
+            //날짜 기본 값 : 오늘 날짜
+            apiController.UpdatedLiftList(context, date);
+            putUpdatedDate(UPDATEDATE, sdf.format(dt));
+        }
     }
-
 
     //승강기 목록 갱신일 저장 sharedPref
     private void putUpdatedDate(String key, String value) {
@@ -164,38 +149,19 @@ public class SplashActivity extends AppCompatActivity {
                 networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
 
                 NetworkRequest networkRequest = networkRequestBuilder.build();
+
                 networkCallback = new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(@NonNull Network network) {
                         super.onAvailable(network);
                         connectivityManager.bindProcessToNetwork(network);
-                        Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
-
-
-                        context.startActivity(new Intent(context, SocketActivity.class));
-                        if (date.equals(today)) {
-                            Log.d("Test", "date == today -> ");
-                            context.startActivity(new Intent(context, MainActivity.class));
-                            finish();
-                        } else {
-                            Log.d("Test", "mobile Stat == true");
-                            Log.d("Test", "today : " + today);
-                            Log.d("Test", "date : " + date);
-                            apiController.setRetrofitInit();
-
-                            //날짜 기본 값 : 오늘 날짜
-                            Date dt = new Date();
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                            today = sdf.format(dt);
-
-                            apiController.UpdatedLiftList(context, date);
-                            putUpdatedDate(UPDATEDATE, sdf.format(dt));
-                        }
+                        Toast.makeText(getApplicationContext(), "네트워크 연결됨", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onUnavailable() {
                         Log.d("Test", "SplashActivity - Enabled : onUnavailable");
+
                     }
                 };
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
@@ -204,7 +170,7 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d("Test", "SplashActivity - Enabled : onUnavailable");
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
                 wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
-                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밀번호"); // 비밀번호
+                wifiConfiguration.preSharedKey = String.format("1234qqqq"); // 비밀번호
                 int wifiId = wifiManager.addNetwork(wifiConfiguration);
                 wifiManager.enableNetwork(wifiId, true);
                 Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
