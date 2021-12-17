@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.elevator.ConnectionMgr;
+import com.example.elevator.api.model.ErrorResult;
 import com.example.elevator.api.model.LiftResult;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.LiftError;
@@ -46,6 +47,7 @@ public class APIController {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        Log.d("Test","Retrofit Init");
         liftInterface = retrofit.create(LiftInterface.class);
     }
 
@@ -224,7 +226,8 @@ public class APIController {
             @Override
             public void onFailure(Call<LiftResult> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("Test", "ERROR");
+                Log.d("Test", "APIController - UpdatedLiftList - ERROR");
+                Log.d("Test", "APIController - UpdatedLiftList - ERROR : "+t.getMessage());
             }
         });
     }
@@ -250,23 +253,24 @@ public class APIController {
     }
 
 
-    public void ErrorPost(LiftError liftError) {
-        Call<ArrayList<LiftError>> call = liftInterface.ErrorPost(liftError);
-        call.enqueue(new Callback<ArrayList<LiftError>>() {
+    public void ErrorPost(ErrorResult errorResult) {
+        Log.d("Test", "ErrorPost - first Line");
+        Call<Void> call = liftInterface.ErrorPost(errorResult);
+        Log.d("Test", "ErrorPost - second Line");
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<ArrayList<LiftError>> call, Response<ArrayList<LiftError>> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<LiftError> date = (ArrayList<LiftError>) response.body();
-                    Log.d("ErrorPost", "res : " + date);
+                    Log.d("Test", "ErrorPost - Success");
 
-                    connectionMgr.disableWifi();
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<LiftError>> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("retrofit", "ERROR");
+                Log.d("Test", "ErrorPost - ERROR");
+                Log.d("Test", "ErrorMsg - "+t.getMessage());
             }
         });
     }

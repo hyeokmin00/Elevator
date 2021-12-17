@@ -29,6 +29,7 @@ import com.example.elevator.api.APIController;
 import com.example.elevator.sock.SocketActivity;
 import com.example.elevator.ui.main.MainActivity;
 import com.example.elevator.utils.NetStat;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,43 +81,46 @@ public class SplashActivity extends AppCompatActivity {
         today = sdf.format(dt);
 
         //wifi 기기와 연결 - 기기가 하나뿐이라 임시로 하드 코딩함
-        
+
         //todo wifi permission 관련 코드 로직 확인 필요
         //todo wifi 기기와 연결 후 error code 수신 -> DB data와 api data 개수 확인 후 화면 전환
         // -> 기기의 id가 dummydata와 일치하지 않아 임시로 맨 처음 화면에서 동일한 지 확인함
-      /*  ssidPattern = "CarKey";
+
+        ssidPattern = "CarKey";
         password = "1234qqqq";
         enableWifi(ssidPattern, password);
-*/
+        //todo errorPost(socket에서 값을 받아 온 것이 아닌 임의의 값을 넣어 api작동을 확인함)
+      //  context.startActivity(new Intent(context, SocketActivity.class));
+
         //최종 갱신일과 오늘 날짜가 동일한 경우 DB 갱신 없이 승강기 목록으로 이동
-        if (date.equals(today)) {
+/*        if (date.equals(today)) {
             //todo 최초 실행시 Activity 스택관리 안 됨
             context.startActivity(new Intent(context, MainActivity.class));
             finish();
-        } else {
-            if (wifiStat == true) {
-                Log.d("Test", "wifiStat Stat == true");
-                context.startActivity(new Intent(context, SocketActivity.class));
-              //  disableWifi();
-                //todo json Object를 Array로 변환하는 과정 필요
-                //또는 해당 json Obj 바로 전송 가능한지 확인
+        } else {*/
 
-            } else if (mobileStat == true) {
-                if (date.equals(today)) {
-                    context.startActivity(new Intent(context, MainActivity.class));
-                    finish();
-                } else {
-                    Log.d("Test", "mobile Stat == true");
-                    Log.d("Test", "today : " + today);
-                    Log.d("Test", "date : " + date);
-                    apiController.setRetrofitInit();
-                    apiController.UpdatedLiftList(this, date);
-                    finish();
-                    putUpdatedDate(UPDATEDATE, sdf.format(dt));
-                }
+/*
+        if (wifiStat) {
+            Log.d("Test", "wifiStat Stat == true");
+            context.startActivity(new Intent(context, SocketActivity.class));
+            //todo json Object를 Array로 변환하는 과정 필요
+            //또는 해당 json Obj 바로 전송 가능한지 확인
+        } else if (mobileStat) {
+            if (date.equals(today)) {
+                Log.d("Test", "date == today -> ");
+                context.startActivity(new Intent(context, MainActivity.class));
+                finish();
+            } else {
+                Log.d("Test", "mobile Stat == true");
+                Log.d("Test", "today : " + today);
+                Log.d("Test", "date : " + date);
+                apiController.setRetrofitInit();
+                apiController.UpdatedLiftList(this, date);
+                putUpdatedDate(UPDATEDATE, sdf.format(dt));
             }
-        }
+        }*/
     }
+
 
     //승강기 목록 갱신일 저장 sharedPref
     private void putUpdatedDate(String key, String value) {
@@ -166,8 +170,31 @@ public class SplashActivity extends AppCompatActivity {
                         super.onAvailable(network);
                         connectivityManager.bindProcessToNetwork(network);
                         Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
+
+
+                        context.startActivity(new Intent(context, SocketActivity.class));
+                        if (date.equals(today)) {
+                            Log.d("Test", "date == today -> ");
+                            context.startActivity(new Intent(context, MainActivity.class));
+                            finish();
+                        } else {
+                            Log.d("Test", "mobile Stat == true");
+                            Log.d("Test", "today : " + today);
+                            Log.d("Test", "date : " + date);
+                            apiController.setRetrofitInit();
+
+                            //날짜 기본 값 : 오늘 날짜
+                            Date dt = new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            today = sdf.format(dt);
+
+                            apiController.UpdatedLiftList(context, date);
+                            putUpdatedDate(UPDATEDATE, sdf.format(dt));
+                        }
                     }
-                    @Override public void onUnavailable() {
+
+                    @Override
+                    public void onUnavailable() {
                         Log.d("Test", "SplashActivity - Enabled : onUnavailable");
                     }
                 };
