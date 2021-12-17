@@ -1,8 +1,12 @@
 package com.example.elevator.sock;
 
+import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.elevator.ConnectionMgr;
+import com.example.elevator.R;
 import com.example.elevator.ui.splash.SplashActivity;
 
 import java.io.IOException;
@@ -15,63 +19,80 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SockClient {
-    //Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
-    // 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
+// send 메서드 스레드
+class ThreadSend implements Runnable{
+    private JSONObject obj;
+    private SockClient sc = new SockClient();
 
-    final int port = 5000;
-    final String serverIp = "192.168.5.5";
+    public ThreadSend(JSONObject obj){
+        this.obj = obj;
+    }
+
+    @Override
+    public void run(){
+        sc.send(obj);
+        Log.d("Test", "SocketClient - ThreadSend : run");
+    }
+}
+
+// recieve 메서드 스레드
+class ThreadRecieve extends Thread{
+    private SockClient sc2 = new SockClient();
+    private JSONObject obj;
+
+    @Override
+    public void run(){
+        Log.d("Test", "SocketClient - ThreadRecieve : run - before");
+        obj = sc2.recv(); //실행까지 되는데 메서드 밖으로 탈출을 못함.
+        Log.d("Test", "SocketClient - ThreadRecieve : run - after");
+
+    }
+
+    public JSONObject getResult(){
+        return obj;
+    }
+}
+class SockClient {
+
 
     Socket socket;
     JSONObject giveObj = new JSONObject();
     JSONObject obj = new JSONObject();
     JSONArray objArray = new JSONArray();
 
-    //public void send() throws IOException {
-    public void send(JSONObject testObj) throws IOException {
-        //Json 객체를 전달받아, 이에 해당하는 패킷 만든 후 전송
-        //만들어진 객체 Error post api로 전송
-
-        socket = new Socket();
-        //socket = new Socket(serverIp, port);
-        socket.connect(new InetSocketAddress(serverIp, port));
-
-        OutputStream os = socket.getOutputStream();
-
-        byte cmd = 0x21;
-        byte length = 0x06;
-        /*  byte cmd = (byte) obj.get("cmd");
-            byte length = (byte) obj.get("length");*/
-           /* cmd = (byte) obj.get("cmd");
-            byte length = (byte) obj.get("length");*/
-
-        byte[] reqBuffer = new byte[7];
-
-        reqBuffer[0] = (byte) 0xA5; //STX_1
-        reqBuffer[1] = (byte) 0x5A; //STX_2
-        reqBuffer[2] = length; //length_Low
-        reqBuffer[3] = (byte) 0x00; //length_High
-        reqBuffer[4] = cmd; //Command
-        reqBuffer[5] = (byte) 0x46; //CRC_Low
-        reqBuffer[6] = (byte) 0xB1; //CRC_High
-
-        os.write(reqBuffer);
-        os.flush();
-        Log.d("Test", "Sock Client - os : " + os);
-        Log.d("Test", "Sock Client - os : " + os.toString());
-
-        Log.d("Test", "SplashActivity - SockClient.recv return 1 : ");
-
-        new Thread(() -> {
-            JSONObject errorList = recv();
-            Log.d("Test", "SplashActivity - SockClient.recv return 2 : " + errorList);
-        }).start();
+    final int port = 5000;
+    final String serverIp = "192.168.5.5";
 
 
+    public void send(JSONObject obj) {
+
+
+        try {
+            socket = new Socket(serverIp,port);
+
+            OutputStream os = socket.getOutputStream();
+            byte cmd = (byte)Integer.parseInt(String.valueOf(obj.get("cmd"))); // 여기 살짝 변했어욥
+            byte length = (byte)Integer.parseInt(String.valueOf(obj.get("length")));
+
+            byte[] reqBuffer = new byte[7];
+
+            reqBuffer[0] = (byte)0xA5; //STX_1
+            reqBuffer[1] = (byte)0x5A; //STX_2
+            reqBuffer[2] = length; //length_Low
+            reqBuffer[3] = (byte)0x00; //length_High
+            reqBuffer[4] = cmd; //Command
+            reqBuffer[5] = (byte)0x46; //CRC_Low
+            reqBuffer[6] = (byte)0xB1; //CRC_High
+
+
+            os.write(reqBuffer);
+            os.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public JSONObject recv() {
-        // 소켓 서버로부터 수신한 byte  데이터 이용하여 JsonObject  생성 후 반환
 
         int size = 1024;
         int recvSize = 0;
@@ -82,6 +103,7 @@ public class SockClient {
         short code = 0;
         short errorcode = 0;
 
+
         String cmd = "";
         String ID = "";
 
@@ -90,73 +112,62 @@ public class SockClient {
         String time = "";
 
         try {
+
+            socket = new Socket(serverIp,port);
             InputStream is = socket.getInputStream();
 
             byte[] recvBuffer = new byte[size];
-            recvSize = is.read(recvBuffer);
+
+            recvSize = is.read(recvBuffer); //여기 부분 문제
 
             cmd = String.valueOf(recvBuffer[4]);
 
-            for (int i = start_id_index; i < id_size; i++) {
+            for(int i = start_id_index; i <id_size; i++) {
                 ID += String.valueOf(recvBuffer[i]);
             }
 
-            while (true) {
+            while(true) {
 
-                datetime = "";
                 date = "";
                 time = "";
                 code = 0;
 
                 errorcode = 0;
-                errorcode |= ((short) recvBuffer[errorcode_index] << 8) & 0xFF00;
-                errorcode |= ((short) recvBuffer[errorcode_index - 1]) & 0x00FF;
+                errorcode |= ((short)recvBuffer[errorcode_index] << 8) & 0xFF00;
+                errorcode |= ((short)recvBuffer[errorcode_index - 1]) & 0x00FF;
 
                 recvSize = recvSize - ((125 - errorcode) * 8) - 10;
 
-                for (int i = start_datetime_index; i < recvSize; i = i + 8) {
-                    for (int j = 0; j < 3; j++) {
-                        if (recvBuffer[i + j] < 10) {
-                            date = date + "0" + recvBuffer[i + j];
-                        } else {
-                            date += recvBuffer[i + j];
-                        }
+                for(int i = start_datetime_index; i < recvSize; i = i + 8 ) {
+                    for(int j = 0; j < 3; j++) {
+                        if (recvBuffer[i + j] < 10) { date = date + "0" + recvBuffer[i + j]; }
+                        else {date += recvBuffer[i + j];}
 
-                        if (j != 2) {
-                            date += "-";
-                        }
+                        if(j != 2) { date += "-";}
                     }
 
-                    for (int j = 3; j < 6; j++) {
-                        if (recvBuffer[i + j] < 10) {
-                            time = time + "0" + recvBuffer[i + j];
-                        } else {
-                            time += recvBuffer[i + j];
-                        }
+                    for(int j = 3; j < 6; j++) {
+                        if (recvBuffer[i + j] < 10) { time = time + "0" + recvBuffer[i + j]; }
+                        else {time += recvBuffer[i + j];}
 
-                        if (j != 5) {
-                            time += ":";
-                        }
+                        if(j != 5) { time += ":";}
                     }
 
                     datetime = date + " " + time;
 
-                    code |= ((short) recvBuffer[i + 7] << 8) & 0xFF00;
-                    code |= ((short) recvBuffer[i + 6]) & 0x00FF;
+                    code |= ((short)recvBuffer[i + 7] << 8) & 0xFF00;
+                    code |= ((short)recvBuffer[i + 6]) & 0x00FF;
 
                     JSONObject obj = new JSONObject();
-                    obj.put("datetime", datetime);
+                    obj.put("datetime",datetime);
                     obj.put("code", code);
-                    Log.d("Test", "SockClient - datetime : " + datetime);
-                    Log.d("Test", "SockClient - code : " + code);
-
-
                     objArray.put(obj);
                 }
 
-                if (errorcode == 125) {
+                if(errorcode == 126) {
                     is.read(recvBuffer);
-                } else {
+                }
+                else {
                     break;
                 }
             }
@@ -165,10 +176,13 @@ public class SockClient {
             giveObj.put("ID", ID);
             giveObj.put("info", objArray);
 
+
         } catch (Exception e) {
+
             e.printStackTrace();
         }
-
+        Log.d("로그볼거야",giveObj.toString());
         return giveObj;
     }
 }
+

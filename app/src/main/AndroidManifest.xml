@@ -33,6 +33,7 @@
 
         <activity android:name=".ui.report.WriteReportActivity" />
         <activity android:name=".ui.SharedExample"/>
+        <activity android:name=".sock.SocketActivity"/>
     </application>
 
 </manifest>

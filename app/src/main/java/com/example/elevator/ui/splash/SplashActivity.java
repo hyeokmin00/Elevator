@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.elevator.R;
 import com.example.elevator.api.APIController;
-import com.example.elevator.sock.SockClient;
+import com.example.elevator.sock.SocketActivity;
 import com.example.elevator.ui.main.MainActivity;
 import com.example.elevator.utils.NetStat;
 import org.json.JSONException;
@@ -46,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
     APIController apiController = new APIController();
     Context context = this;
     NetStat netStat = new NetStat();
-    SockClient sockClient = new SockClient();
+
 
     String date;
     String today;
@@ -95,27 +95,9 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         } else {
             if (wifiStat == true) {
-                Log.d("Test", "wifi Stat == true");
-                try {
-                    JSONObject testObj = new JSONObject();
-                    testObj.put("cmd", (byte) 0x21);
-                    testObj.put("length", (byte) 0x06);
-                    testObj.put("data", null);
-
-                    new Thread(() -> {
-                        try {
-                            sockClient.send(testObj); // network 동작, 인터넷에서 xml을 받아오는 코드
-                            //   sockClient.send(); // network 동작, 인터넷에서 xml을 받아오는 코드
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.d("Test", "SplashActivity - SockClient.recv catch");
-                }
-                disableWifi();
+                Log.d("Test", "wifiStat Stat == true");
+                context.startActivity(new Intent(context, SocketActivity.class));
+              //  disableWifi();
                 //todo json Object를 Array로 변환하는 과정 필요
                 //또는 해당 json Obj 바로 전송 가능한지 확인
 
