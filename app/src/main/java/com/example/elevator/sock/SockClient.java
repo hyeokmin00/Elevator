@@ -19,39 +19,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// send 메서드 스레드
-class ThreadSend implements Runnable{
-    private JSONObject obj;
+class ThreadSendAndRecieve implements Runnable {
+    private JSONObject getObj;
+    private JSONObject giveObj;
     private SockClient sc = new SockClient();
 
-    public ThreadSend(JSONObject obj){
-        this.obj = obj;
+    public ThreadSendAndRecieve(JSONObject getObj){
+        this.getObj = getObj;
     }
 
     @Override
     public void run(){
-        sc.send(obj);
-        Log.d("Test", "SocketClient - ThreadSend : run");
+        giveObj = sc.send_And_recv(getObj);
     }
-}
-
-// recieve 메서드 스레드
-class ThreadRecieve extends Thread{
-    private SockClient sc2 = new SockClient();
-    private JSONObject obj;
-
-    @Override
-    public void run(){
-        Log.d("Test", "SocketClient - ThreadRecieve : run - before");
-        obj = sc2.recv(); //실행까지 되는데 메서드 밖으로 탈출을 못함.
-        Log.d("Test", "SocketClient - ThreadRecieve : run - after");
-
-    }
-
     public JSONObject getResult(){
-        return obj;
+        return giveObj;
     }
 }
+
+
 class SockClient {
 
 
@@ -60,129 +46,148 @@ class SockClient {
     JSONObject obj = new JSONObject();
     JSONArray objArray = new JSONArray();
 
+
+    final int port = 70; // 포트
+    final String serverIp = "192.168.35.225"; // 주소
+    /*
     final int port = 5000;
-    final String serverIp = "192.168.5.5";
+    final String serverIp = "192.168.5.5";     -> 기계 연결 시 사용
+    */
+    JSONObject recvObj = new JSONObject();
+    JSONArray recvObjArray = new JSONArray();
 
+    int size = 1024;
+    byte[] recvBuffer = new byte[size];
 
-    public void send(JSONObject obj) {
+    int recvSize = 0;
+    int start_id_index = 5;
+    int id_size = 7;
+    int errorcode_index = 13;
+    int start_datetime_index = 14;
+    short code = 0;
+    short errorcode = 0;
 
+    String cmd = "";
+    String ID = "";
 
+    String datetime = "";
+    String date = "";
+    String time = "";
+
+    public JSONObject send_And_recv(JSONObject obj) {
+        // socket 연결
         try {
-            socket = new Socket(serverIp,port);
-
-            OutputStream os = socket.getOutputStream();
-            byte cmd = (byte)Integer.parseInt(String.valueOf(obj.get("cmd"))); // 여기 살짝 변했어욥
-            byte length = (byte)Integer.parseInt(String.valueOf(obj.get("length")));
-
-            byte[] reqBuffer = new byte[7];
-
-            reqBuffer[0] = (byte)0xA5; //STX_1
-            reqBuffer[1] = (byte)0x5A; //STX_2
-            reqBuffer[2] = length; //length_Low
-            reqBuffer[3] = (byte)0x00; //length_High
-            reqBuffer[4] = cmd; //Command
-            reqBuffer[5] = (byte)0x46; //CRC_Low
-            reqBuffer[6] = (byte)0xB1; //CRC_High
-
-
-            os.write(reqBuffer);
-            os.flush();
+            socket = new Socket(serverIp, port);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    public JSONObject recv() {
-
-        int size = 1024;
-        int recvSize = 0;
-        int start_id_index = 5;
-        int id_size = 7;
-        int errorcode_index = 13;
-        int start_datetime_index = 14;
-        short code = 0;
-        short errorcode = 0;
-
-
-        String cmd = "";
-        String ID = "";
-
-        String datetime = "";
-        String date = "";
-        String time = "";
-
+        // send(JSONObject obj) 기능
         try {
 
-            socket = new Socket(serverIp,port);
+            OutputStream os = socket.getOutputStream();
+
+            byte cmd = (byte) Integer.parseInt(String.valueOf(obj.get("cmd")));
+            byte length = (byte) Integer.parseInt(String.valueOf(obj.get("length")));
+
+            byte[] reqBuffer = new byte[7];
+
+            reqBuffer[0] = (byte) 0xA5; //STX_1
+            reqBuffer[1] = (byte) 0x5A; //STX_2
+            reqBuffer[2] = length; //length_Low
+            reqBuffer[3] = (byte) 0x00; //length_High
+            reqBuffer[4] = cmd; //Command
+            reqBuffer[5] = (byte) 0x46; //CRC_Low
+            reqBuffer[6] = (byte) 0xB1; //CRC_High
+
+            os.write(reqBuffer);
+            os.flush();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        // recv() 기능
+        try {
+
             InputStream is = socket.getInputStream();
 
-            byte[] recvBuffer = new byte[size];
-
-            recvSize = is.read(recvBuffer); //여기 부분 문제
+            recvSize = is.read(recvBuffer);
 
             cmd = String.valueOf(recvBuffer[4]);
 
-            for(int i = start_id_index; i <id_size; i++) {
+            for (int i = start_id_index; i < start_id_index + id_size; i++) {
                 ID += String.valueOf(recvBuffer[i]);
             }
 
-            while(true) {
-
-                date = "";
-                time = "";
-                code = 0;
+            while (true) {
 
                 errorcode = 0;
-                errorcode |= ((short)recvBuffer[errorcode_index] << 8) & 0xFF00;
-                errorcode |= ((short)recvBuffer[errorcode_index - 1]) & 0x00FF;
+                errorcode |= ((short) recvBuffer[errorcode_index] << 8) & 0xFF00;
+                errorcode |= ((short) recvBuffer[errorcode_index - 1]) & 0x00FF;
 
-                recvSize = recvSize - ((125 - errorcode) * 8) - 10;
+                recvSize = recvSize - ((126 - errorcode) * 8) - 2;
+               // recvSize = recvSize - ((125 - errorcode) * 8 ) - 10; -> 기계 연결 시 사용
 
-                for(int i = start_datetime_index; i < recvSize; i = i + 8 ) {
-                    for(int j = 0; j < 3; j++) {
-                        if (recvBuffer[i + j] < 10) { date = date + "0" + recvBuffer[i + j]; }
-                        else {date += recvBuffer[i + j];}
+                for (int i = start_datetime_index; i < recvSize; i = i + 8) {
+                    for (int j = 0; j < 3; j++) {
+                        if (recvBuffer[i + j] < 10) {
+                            date = date + "0" + recvBuffer[i + j];
+                        } else {
+                            date += recvBuffer[i + j];
+                        }
 
-                        if(j != 2) { date += "-";}
+                        if (j != 2) {
+                            date += "-";
+                        }
                     }
 
-                    for(int j = 3; j < 6; j++) {
-                        if (recvBuffer[i + j] < 10) { time = time + "0" + recvBuffer[i + j]; }
-                        else {time += recvBuffer[i + j];}
+                    for (int j = 3; j < 6; j++) {
+                        if (recvBuffer[i + j] < 10) {
+                            time = time + "0" + recvBuffer[i + j];
+                        } else {
+                            time += recvBuffer[i + j];
+                        }
 
-                        if(j != 5) { time += ":";}
+                        if (j != 5) {
+                            time += ":";
+                        }
                     }
 
                     datetime = date + " " + time;
 
-                    code |= ((short)recvBuffer[i + 7] << 8) & 0xFF00;
-                    code |= ((short)recvBuffer[i + 6]) & 0x00FF;
+                    code |= ((short) recvBuffer[i + 7] << 8) & 0xFF00;
+                    code |= ((short) recvBuffer[i + 6]) & 0x00FF;
 
-                    JSONObject obj = new JSONObject();
-                    obj.put("datetime",datetime);
-                    obj.put("code", code);
-                    objArray.put(obj);
+
+                    JSONObject recvObjectData = new JSONObject();
+                    recvObjectData.put("datetime", datetime);
+                    recvObjectData.put("code", code);
+                    recvObjArray.put(recvObjectData);
+
+                    date = time = "";
+                    code = 0;
                 }
 
-                if(errorcode == 126) {
+                if (errorcode == 126) {
                     is.read(recvBuffer);
-                }
-                else {
+                } else {
+                    is.close();
                     break;
                 }
             }
 
-            giveObj.put("cmd", cmd);
-            giveObj.put("ID", ID);
-            giveObj.put("info", objArray);
-
+            recvObj.put("cmd", cmd);
+            recvObj.put("ID", ID);
+            recvObj.put("info", recvObjArray);
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
-        Log.d("로그볼거야",giveObj.toString());
-        return giveObj;
+
+        return recvObj;
     }
 }
 

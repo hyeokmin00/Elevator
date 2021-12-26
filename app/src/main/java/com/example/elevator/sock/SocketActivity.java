@@ -31,36 +31,28 @@ public class SocketActivity extends AppCompatActivity {
         Log.d("Test", "SocketActivity OnCreated");
 
         try {
-            JSONObject obj = new JSONObject();
-            obj.put("cmd", (byte) 0x21);
-            obj.put("length", (byte) 0x06);
-            obj.put("data", null);
 
-            ThreadSend tmpThread = new ThreadSend(obj);
-            Thread threadSend = new Thread(tmpThread);
+            JSONObject sendObj = new JSONObject();
+            sendObj.put("cmd", (byte) 0x21);
+            sendObj.put("length", (byte) 0x06);
+            sendObj.put("data", null);
 
-            ThreadRecieve threadRecieve = new ThreadRecieve();
+            ThreadSendAndRecieve sarThread = new ThreadSendAndRecieve(sendObj);
+            Thread thread = new Thread(sarThread);
 
-            threadSend.start();
+            thread.start();
             try {
-                threadSend.join();
+                thread.join();
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            threadRecieve.start();
+            JSONObject Data = sarThread.getResult();
 
-            try {
-                threadRecieve.join();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
+            Log.d("Test",Data.toString());
 
-            JSONObject jo = threadRecieve.getResult(); // 이거 출력 되면 성공(.toString() 으로 로그출력,,)
 
-            Log.d("Test", "SocketActivity - OnCreated Json : " + jo);
-
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
