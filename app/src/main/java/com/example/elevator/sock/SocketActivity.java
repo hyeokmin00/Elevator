@@ -230,7 +230,7 @@ public class SocketActivity extends AppCompatActivity {
                         if(isConnected(context)){
                             Log.d("로그", "lte");
                         } else{
-                            Log.d("로그", "lte없음");
+                            Log.d("로그", "not lte");
                         }
 
                     }
