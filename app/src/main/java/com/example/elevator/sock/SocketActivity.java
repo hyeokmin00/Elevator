@@ -63,9 +63,7 @@ public class SocketActivity extends AppCompatActivity {
         password = "1234qqqq";
 
         if (!wifiStat) {
-
             wifi연결
-
             try {
 
                 JSONObject sendObj = new JSONObject();
@@ -89,7 +87,7 @@ public class SocketActivity extends AppCompatActivity {
 
 
        /*
-          jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
+        jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
         ErrorResult errorResult;
                 String lift_id = "1234572";
                 ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
