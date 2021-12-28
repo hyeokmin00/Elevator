@@ -68,16 +68,38 @@ public class SocketActivity extends AppCompatActivity {
         liftId = intent.getStringExtra("lift_id");
 
         Log.d("Test", "SocketActivity OnCreated");
-/*
+
         Boolean wifiStat = netStat.isWIFIConnected(this);
         Boolean mobileStat = netStat.isMOBILEConnected(this);
 
         //wifi 기기와 연결 - 기기가 하나뿐이라 임시로 하드 코딩함
         ssidPattern = "CarKey";
         password = "1234qqqq";
-        enableWifi(ssidPattern, password);
 
-        try {
+        if(!wifiStat){
+            wifi연결
+                    socketClient
+                    JSONObject = sc.send_And_recv()의 return 값
+
+            jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
+                    wifi연결 해제
+            ErrorResult errorResult;
+            String lift_id = "1234572";
+            ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
+            String errCode = "128";
+            String datetime = "2021-11-18 21:21:01";
+
+            lift_errors.add(new LiftError(Integer.parseInt(errCode), datetime));
+            errorResult = new ErrorResult(Integer.parseInt(lift_id), lift_errors);
+
+            if(networkCallback == true){
+                apiController.setRetrofitInit();
+                apiController.ErrorPost(errorResult);
+                apiController return값이 200 인 경우 화면전환
+            }
+        }
+
+      /*  try {
 
             JSONObject sendObj = new JSONObject();
             sendObj.put("cmd", (byte) 0x21);
@@ -101,8 +123,9 @@ public class SocketActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
+/*
 
         //todo ErrorCode dummydata 연결함. -> Socket 연결 부분 수정 후 변경 필요
         ErrorResult errorResult;
@@ -122,7 +145,8 @@ public class SocketActivity extends AppCompatActivity {
 
         //todo jo를 LiftError로 변환 후 ErrorPost -> finish();
         apiController.setRetrofitInit();
-        apiController.ErrorPost(errorResult);*/
+        apiController.ErrorPost(errorResult);
+*/
 
         Intent intent2 = new Intent(context, WriteReportActivity.class);
         intent2.putExtra("lift_id", liftId);
@@ -133,6 +157,8 @@ public class SocketActivity extends AppCompatActivity {
 
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
+        //permission check -> wifi ssid, pw 맞춰서 연결 -> socketClient(JsonData로 저장)
+
         OnCheckPermission();
         checkSystemPermission();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
