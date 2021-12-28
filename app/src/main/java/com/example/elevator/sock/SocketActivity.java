@@ -63,8 +63,10 @@ public class SocketActivity extends AppCompatActivity {
         password = "1234qqqq";
 
         ConnectionMgr cmg = new ConnectionMgr(context);
+        cmg.disableWifi(); // 네트워크가 되는 와이파이가 연결되어 있는 경우 ssid가 일치하는 기기로 연결해야하기 때문에
         if (!wifiStat) {
-            cmg.enableWifi();
+        //    cmg.disableWifi();
+           // cmg.enableWifi();
             try {
 
                 JSONObject sendObj = new JSONObject();
