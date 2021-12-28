@@ -1,4 +1,5 @@
 package com.example.elevator;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -182,39 +183,5 @@ class ConnectionMgr extends Activity {
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
-    }
-}
-
-public class MainActivity extends AppCompatActivity {
-
-    Button on;
-    Button off;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        on = (Button) findViewById(R.id.btn_connect);
-        off = (Button) findViewById(R.id.btn_disconnect);
-
-        View.OnClickListener onClickListener
-                = new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                ConnectionMgr cmg = new ConnectionMgr(getApplicationContext());
-                switch (v.getId()){
-                    case R.id.btn_connect:
-                        cmg.enableWifi();
-                        break;
-                    case R.id.btn_disconnect:
-                        cmg.disableWifi();
-                        break;
-                }
-            }
-        };
-
-        on.setOnClickListener(onClickListener);
-        off.setOnClickListener(onClickListener);
-
     }
 }
