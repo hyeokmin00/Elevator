@@ -1,9 +1,10 @@
 package com.example.elevator;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -19,33 +20,29 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
-public class ConnectionMgr extends AppCompatActivity {
-
-    // 와이파이 사용가능
-    // wifi disable
+class ConnectionMgr extends Activity {
 
     Context context;
+
     static final int PERMISSIONS_REQUEST = 0x0000001;
-    private ConnectivityManager connectivityManager;
+
     private ConnectivityManager.NetworkCallback networkCallback;
 
     public ConnectionMgr(Context context){
         this.context = context;
     }
 
-    public void enableWifi(String ssidPattern, String password) {
-        // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
 
-        OnCheckPermission();
-        checkSystemPermission();
+    public void enableWifi() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (!wifiManager.isWifiEnabled()) {
@@ -55,8 +52,8 @@ public class ConnectionMgr extends AppCompatActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                 WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
-                builder.setSsidPattern(new PatternMatcher(ssidPattern,PatternMatcher.PATTERN_PREFIX));
-                builder.setWpa2Passphrase(password);
+                builder.setSsidPattern(new PatternMatcher("CarKey",PatternMatcher.PATTERN_PREFIX));
+                builder.setWpa2Passphrase("1234qqqq");
 
                 WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
 
@@ -65,72 +62,74 @@ public class ConnectionMgr extends AppCompatActivity {
                 networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
 
                 NetworkRequest networkRequest = networkRequestBuilder.build();
+
                 networkCallback = new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(@NonNull Network network) {
                         super.onAvailable(network);
-                        connectivityManager.bindProcessToNetwork(network);
-                        Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            connectivityManager.bindProcessToNetwork(network);
+                        }
                     }
                 };
-
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
                 connectivityManager.requestNetwork(networkRequest, networkCallback);
 
 
             } else {
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
-                wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
-                wifiConfiguration.preSharedKey = String.format("\"%s\"", "비밀번호"); // 비밀번호
+                wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_WiFi11"); // 연결하고자 하는 SSID
+                wifiConfiguration.preSharedKey = String.format("\"%s\"", "1234qqqq"); // 비밀번호
                 int wifiId = wifiManager.addNetwork(wifiConfiguration);
                 wifiManager.enableNetwork(wifiId, true);
-                Toast.makeText(getApplicationContext(), "연결됨", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "연결 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
         }
 
     }
-
-    public void disableWifi() {
-        // wifi disable
+    void disableWifi() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
             if (wifiManager.isWifiEnabled()) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
                     connectivityManager.unregisterNetworkCallback(networkCallback);
-                    Toast.makeText(getApplicationContext(), "연결 끊김", Toast.LENGTH_SHORT).show();
 
                 } else {
                     if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
-                        Toast.makeText(getApplicationContext(), "연결", Toast.LENGTH_SHORT).show();
 
                     } else {
                         int networkId = wifiManager.getConnectionInfo().getNetworkId();
                         wifiManager.removeNetwork(networkId);
                         wifiManager.saveConfiguration();
                         wifiManager.disconnect();
-                        Toast.makeText(getApplicationContext(), "연결 끊김", Toast.LENGTH_SHORT).show();
+
+                        boolean a = isConnected(context);
+                        if(a){
+                            Log.d("로그", "lte");
+                        } else{
+                            Log.d("로그", "lte없음");
+                        }
                     }
                 }
+
             } else
                 Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void OnCheckPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //사용자가 권한 요처을 명시적으로 거부한 경우 - true 처음 보거나 다시 묻지 않음 선택한 경우 false 반환
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Toast.makeText(this, "앱 실행을 위해서는 권한을 설정해야 합니다", Toast.LENGTH_LONG).show();
                 ActivityCompat.requestPermissions(this,
@@ -173,9 +172,49 @@ public class ConnectionMgr extends AppCompatActivity {
             }
         } else {
 
-            Log.d("Test","ConnectionMgr - checkSysPermission");
         }
 
         return permission;
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+}
+
+public class MainActivity extends AppCompatActivity {
+
+    Button on;
+    Button off;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        on = (Button) findViewById(R.id.btn_connect);
+        off = (Button) findViewById(R.id.btn_disconnect);
+
+        View.OnClickListener onClickListener
+                = new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ConnectionMgr cmg = new ConnectionMgr(getApplicationContext());
+                switch (v.getId()){
+                    case R.id.btn_connect:
+                        cmg.enableWifi();
+                        break;
+                    case R.id.btn_disconnect:
+                        cmg.disableWifi();
+                        break;
+                }
+            }
+        };
+
+        on.setOnClickListener(onClickListener);
+        off.setOnClickListener(onClickListener);
+
     }
 }
