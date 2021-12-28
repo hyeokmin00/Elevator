@@ -65,7 +65,9 @@ public class SocketActivity extends AppCompatActivity {
         ConnectionMgr cmg = new ConnectionMgr(context);
         if (!wifiStat) {
 
+
             cmg.enableWifi();
+
 
             try {
 
@@ -90,7 +92,7 @@ public class SocketActivity extends AppCompatActivity {
 
 
        /*
-          jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
+        jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
         ErrorResult errorResult;
                 String lift_id = "1234572";
                 ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
