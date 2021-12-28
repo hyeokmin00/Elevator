@@ -94,9 +94,8 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
                     final int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         itemClickListener.onItemClick(v, position);
-                        Intent intent = new Intent(context, WriteReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Intent intent = new Intent(context, SocketActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         //    intent.putExtra("lift_id",liftInfoInfoList.get );
-
                     }
                 }
             });

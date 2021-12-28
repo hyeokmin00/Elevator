@@ -64,9 +64,7 @@ public class SocketActivity extends AppCompatActivity {
 
         ConnectionMgr cmg = new ConnectionMgr(context);
         if (!wifiStat) {
-
             cmg.enableWifi();
-
             try {
 
                 JSONObject sendObj = new JSONObject();
@@ -85,16 +83,13 @@ public class SocketActivity extends AppCompatActivity {
                 }
 
                 JSONObject Data = sarThread.getResult();
+                Log.d("Test",Data.toString());
 
                 cmg.disableWifi();
 
 
        /*
         jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
-
-
-
-
         ErrorResult errorResult;
                 String lift_id = "1234572";
                 ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
@@ -109,19 +104,50 @@ public class SocketActivity extends AppCompatActivity {
                     apiController.ErrorPost(errorResult);
                     apiController return값이 200 인 경우 화면전환
                 } */
+                Log.d("Test", "JsonData : " +Data.toString());
+
+                Intent intent2 = new Intent(context, WriteReportActivity.class);
+                intent2.putExtra("lift_id", liftId);
+                context.startActivity(intent2);
+                finish();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+
+                JSONObject sendObj = new JSONObject();
+                sendObj.put("cmd", (byte) 0x21);
+                sendObj.put("length", (byte) 0x06);
+                sendObj.put("data", null);
+
+                ThreadSendAndRecieve sarThread = new ThreadSendAndRecieve(sendObj);
+                Thread thread = new Thread(sarThread);
+
+                thread.start();
+                try {
+                    thread.join();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject Data = sarThread.getResult();
+                Log.d("Test",Data.toString());
+
+                cmg.disableWifi();
                 Log.d("Test", Data.toString());
+
+
+                Intent intent2 = new Intent(context, WriteReportActivity.class);
+                intent2.putExtra("lift_id", liftId);
+                context.startActivity(intent2);
+                finish();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-
-        Intent intent2 = new Intent(context, WriteReportActivity.class);
-        intent2.putExtra("lift_id", liftId);
-        context.startActivity(intent2);
-        finish();
-
-
     }
 
 
