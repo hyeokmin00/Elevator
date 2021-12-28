@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
@@ -59,7 +60,7 @@ public class SocketActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket);
-        ConnectionMgr connectionMgr = new ConnectionMgr();
+        ConnectionMgr connectionMgr = new ConnectionMgr(getApplicationContext());
         APIController apiController = new APIController();
         SockClient sc = new SockClient();
 
@@ -134,7 +135,7 @@ public class SocketActivity extends AppCompatActivity {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
         OnCheckPermission();
         checkSystemPermission();
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
@@ -174,7 +175,7 @@ public class SocketActivity extends AppCompatActivity {
             } else {
                 Log.d("Test", "SplashActivity - Enabled : onUnavailable");
                 WifiConfiguration wifiConfiguration = new WifiConfiguration();
-                wifiConfiguration.SSID = String.format("\"%s\"", "wifi 이름"); // 연결하고자 하는 SSID
+                wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_1111"); // 연결하고자 하는 SSID
                 wifiConfiguration.preSharedKey = String.format("1234qqqq"); // 비밀번호
                 int wifiId = wifiManager.addNetwork(wifiConfiguration);
                 wifiManager.enableNetwork(wifiId, true);
@@ -205,7 +206,7 @@ public class SocketActivity extends AppCompatActivity {
     }
     public void disableWifi() {
         // wifi disable
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
@@ -224,6 +225,14 @@ public class SocketActivity extends AppCompatActivity {
                         wifiManager.saveConfiguration();
                         wifiManager.disconnect();
                         Toast.makeText(getApplicationContext(), "연결 끊김 ", Toast.LENGTH_SHORT).show();
+
+                        //실험중
+                        if(isConnected(context)){
+                            Log.d("로그", "lte");
+                        } else{
+                            Log.d("로그", "lte없음");
+                        }
+
                     }
                 }
             } else
@@ -265,5 +274,12 @@ public class SocketActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 }

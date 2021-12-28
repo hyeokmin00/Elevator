@@ -27,20 +27,24 @@ import android.widget.Toast;
 
 public class ConnectionMgr extends AppCompatActivity {
 
-    // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
+    // 와이파이 사용가능
     // wifi disable
 
+    Context context;
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
+    public ConnectionMgr(Context context){
+        this.context = context;
+    }
 
     public void enableWifi(String ssidPattern, String password) {
         // 와이파이 사용가능하게 하고 연결된 wifi 기기의 ssid 반환
 
         OnCheckPermission();
         checkSystemPermission();
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
@@ -92,7 +96,7 @@ public class ConnectionMgr extends AppCompatActivity {
 
     public void disableWifi() {
         // wifi disable
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         try {
