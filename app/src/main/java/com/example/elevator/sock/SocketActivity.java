@@ -37,7 +37,7 @@ public class SocketActivity extends AppCompatActivity {
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
-//    private ConnectivityManager.NetworkCallback networkCallback;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     APIController apiController = new APIController();
     Context context = this;
@@ -47,7 +47,7 @@ public class SocketActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket);
-        ConnectionMgr connectionMgr = new ConnectionMgr();
+        ConnectionMgr connectionMgr = new ConnectionMgr(context);
         APIController apiController = new APIController();
         SockClient sc = new SockClient();
 
@@ -62,8 +62,13 @@ public class SocketActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
 
+        ConnectionMgr cmg = new ConnectionMgr(context);
         if (!wifiStat) {
-            wifi연결
+
+
+            cmg.enableWifi();
+
+
             try {
 
                 JSONObject sendObj = new JSONObject();
@@ -83,7 +88,7 @@ public class SocketActivity extends AppCompatActivity {
 
                 JSONObject Data = sarThread.getResult();
 
-                wifi연결 해제
+                cmg.disableWifi();
 
 
        /*
