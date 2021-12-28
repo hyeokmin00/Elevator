@@ -28,7 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-class ConnectionMgr extends Activity {
+public class ConnectionMgr extends Activity {
 
     Context context;
 
@@ -90,7 +90,7 @@ class ConnectionMgr extends Activity {
         }
 
     }
-    void disableWifi() {
+    public void disableWifi() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

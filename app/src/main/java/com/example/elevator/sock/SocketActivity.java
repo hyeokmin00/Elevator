@@ -37,7 +37,7 @@ public class SocketActivity extends AppCompatActivity {
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
-//    private ConnectivityManager.NetworkCallback networkCallback;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     APIController apiController = new APIController();
     Context context = this;
@@ -65,7 +65,7 @@ public class SocketActivity extends AppCompatActivity {
         ConnectionMgr cmg = new ConnectionMgr(context);
         if (!wifiStat) {
 
-            cmg.enableWifi(ssidPattern, password);
+            cmg.enableWifi();
 
             try {
 
