@@ -170,6 +170,7 @@ class SockClient {
                 }
 
                 if (errorcode == 126) {
+                //  if (errorcode == 125) { -> 기계 연결 시 사용
                     is.read(recvBuffer);
                 } else {
                     is.close();
