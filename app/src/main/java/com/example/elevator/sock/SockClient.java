@@ -103,11 +103,9 @@ class SockClient {
             os.write(reqBuffer);
             os.flush();
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         // recv() 기능
         try {

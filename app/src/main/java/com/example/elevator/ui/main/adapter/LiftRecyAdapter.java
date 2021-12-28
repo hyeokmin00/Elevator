@@ -17,6 +17,7 @@ import com.example.elevator.R;
 import com.example.elevator.api.model.LiftInfo;
 import com.example.elevator.api.roomdb.Lift;
 import com.example.elevator.api.roomdb.LiftDB;
+import com.example.elevator.sock.SocketActivity;
 import com.example.elevator.ui.report.WriteReportActivity;
 
 import java.text.SimpleDateFormat;
@@ -50,7 +51,7 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
         liftViewHolder.itemView.setOnClickListener((v) -> {
             Log.d("Test", "LiftRecyAdapter - 승강기 id : " + items.get(position).getLiftId());
 
-            Intent intent = new Intent(context, WriteReportActivity.class);
+            Intent intent = new Intent(context, SocketActivity.class);
             intent.putExtra("lift_id", items.get(position).getLiftId());
             context.startActivity(intent);
         });

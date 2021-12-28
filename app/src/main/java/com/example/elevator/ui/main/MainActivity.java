@@ -21,6 +21,10 @@ import com.example.elevator.ui.main.adapter.LiftRecyAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
+    /* 승강기 목록 RecyclerView로 보여줌.
+    아이템 클릭 시 SocketActivity에서 SSID와 PW 비교해 기기연결 후 ErrorList 반환받음
+    해당 목록 lte 연결 후 ErrorPost를 통해 서버에 전송함.
+    이때 다음 동작을 위해 Lift_id 같이 보내야함 */
 
     //api로 받아온 데이터 RoodDB 저장 된 데이터 표현
     //리스트 중 아이템 클릭 시
@@ -40,10 +44,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recycler = findViewById(R.id.recyclerview);
-        //todo RoodDB ListInfo 데이터 받아와 adapter에 값 넘겨주기
-        //db 객체 초기화
-        //   liftDb = LiftDB.getInstance(this);
-        //Main Thread에서 DB 접근 불가 -> Thread 이용
         context = this;
 
         class GetAppRunnable implements Runnable {
@@ -62,9 +62,5 @@ public class MainActivity extends AppCompatActivity {
         Thread t = new Thread(getAppRunnable);
         t.start();
 
-
-        // Recycler view item click event 처리
-
     }
-
 }
