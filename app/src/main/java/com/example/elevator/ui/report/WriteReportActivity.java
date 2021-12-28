@@ -34,6 +34,10 @@ import java.util.Date;
 import retrofit2.Retrofit;
 
 public class WriteReportActivity extends AppCompatActivity {
+    /* liftId intent로 전달 받은 후 API Controller의 SendReport를 통해 서버로 전달하거나
+    sharedPref에 임시 저장 */
+    
+    
     //activity_writereport
 
     AppCompatButton send;
@@ -69,7 +73,6 @@ public class WriteReportActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        //String liftId = intent.getStringExtra("lift_id");
         liftId = intent.getStringExtra("lift_id");
         tvLiftNum.setText("승강기 번호 : " + liftId);
 

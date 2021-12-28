@@ -1,5 +1,6 @@
 package com.example.elevator.api;
 
+import com.example.elevator.api.model.ErrorResult;
 import com.example.elevator.api.model.LiftResult;
 import com.example.elevator.api.model.ReportList;
 import com.example.elevator.api.model.LiftError;
@@ -27,9 +28,10 @@ public interface LiftInterface {
     @GET("afterdate/") // 6
     Call<LiftResult> UpdatedElevator (@Query("date") String date);
 
+    //응답값이 code, message 와 같은 기본 값 외에 body 없으므로 call Void로 설정해줌
     @POST("posterr/") // 9
-    Call<ArrayList<LiftError>> ErrorPost(
-            @Body LiftError errorpost);
+    Call<Void> ErrorPost(
+            @Body ErrorResult errorResult);
 
     @POST("postrepo/") // 12
     Call <ReportList> SendReport(@Body ReportList reportList);

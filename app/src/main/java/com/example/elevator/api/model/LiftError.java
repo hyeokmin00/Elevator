@@ -8,9 +8,10 @@ import java.util.ArrayList;
 public class LiftError {
     @SerializedName("errCode")
     @Expose
-    private String errCode;
-    public String getErrCode() {  return errCode;  }
-    public void setErrCode(String errCode) {
+    private int errCode;
+
+    public int getErrCode() {  return errCode;  }
+    public void setErrCode(int errCode) {
         this.errCode = errCode;
     }
 
@@ -23,4 +24,11 @@ public class LiftError {
     public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
+
+    //dummy data 저장
+    public LiftError(int errCode, String datetime) {
+        this.errCode = errCode;
+        this.datetime = datetime;
+    }
+
 }
