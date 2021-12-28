@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class ErrorResult {
 
+
     @SerializedName("lift_id")
     @Expose
     private int lift_id;
