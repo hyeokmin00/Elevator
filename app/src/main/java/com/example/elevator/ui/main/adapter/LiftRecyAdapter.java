@@ -85,12 +85,9 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
 
         public LiftViewHolder(View itemView,
                               final OnItemClickEventListener itemClickListener) {
-
             super(itemView);
-
             tvId = (TextView) itemView.findViewById(R.id.item_total_id);
             tvName = (TextView) itemView.findViewById(R.id.item_total_name);
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,6 +108,4 @@ public class LiftRecyAdapter extends RecyclerView.Adapter<com.example.elevator.u
         items = data;
         notifyDataSetChanged();
     }
-
-
 }

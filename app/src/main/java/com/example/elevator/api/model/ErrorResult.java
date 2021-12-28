@@ -8,6 +8,13 @@ import java.util.ArrayList;
 
 public class ErrorResult {
 
+    @SerializedName("cmd")
+    @Expose
+    private int cmd;
+    public int getCmd() {  return cmd;  }
+    public void setCmd(int cmd) {
+        this.cmd = cmd;
+    }
 
     @SerializedName("lift_id")
     @Expose
