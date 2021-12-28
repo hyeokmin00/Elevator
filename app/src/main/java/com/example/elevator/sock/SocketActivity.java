@@ -28,6 +28,7 @@ import com.example.elevator.R;
 import com.example.elevator.api.APIController;
 import com.example.elevator.api.model.ErrorResult;
 import com.example.elevator.api.model.LiftError;
+import com.example.elevator.ui.report.WriteReportActivity;
 import com.example.elevator.utils.NetStat;
 
 import org.json.JSONException;
@@ -67,7 +68,7 @@ public class SocketActivity extends AppCompatActivity {
         liftId = intent.getStringExtra("lift_id");
 
         Log.d("Test", "SocketActivity OnCreated");
-
+/*
         Boolean wifiStat = netStat.isWIFIConnected(this);
         Boolean mobileStat = netStat.isMOBILEConnected(this);
 
@@ -121,9 +122,9 @@ public class SocketActivity extends AppCompatActivity {
 
         //todo jo를 LiftError로 변환 후 ErrorPost -> finish();
         apiController.setRetrofitInit();
-        apiController.ErrorPost(errorResult);
+        apiController.ErrorPost(errorResult);*/
 
-        Intent intent2 = new Intent(context, SocketActivity.class);
+        Intent intent2 = new Intent(context, WriteReportActivity.class);
         intent2.putExtra("lift_id", liftId);
         context.startActivity(intent2);
         finish();
