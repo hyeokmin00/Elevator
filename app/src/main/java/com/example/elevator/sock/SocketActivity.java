@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -71,10 +72,18 @@ public class SocketActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
 
-        startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+        int status = NetworkStatus.getConnectivityStatus(getApplicationContext());
+        if (status == NetworkStatus.TYPE_WIFI){
+            startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+            Toast.makeText(this, "와이파이 연결을 해제해주세요.", Toast.LENGTH_LONG).show();
+        }
 
-        ConnectionMgr cmg = new ConnectionMgr(context);
+
         if (!wifiStat) {
+            if (status != NetworkStatus.TYPE_WIFI){
+                startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+                Toast.makeText(this, "와이파이를 연결해주세요.", Toast.LENGTH_LONG).show();
+            }
 
             //enableWifi()
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -227,5 +236,26 @@ public class SocketActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+}
+
+class NetworkStatus {
+    public static final int TYPE_WIFI = 1;
+    public static final int TYPE_MOBILE = 2;
+    public static final int TYPE_NOT_CONNECTED = 3;
+
+    public static int getConnectivityStatus(Context context){ //해당 context의 서비스를 사용하기위해서 context객체를 받는다.
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if(networkInfo != null){
+            int type = networkInfo.getType();
+            if(type == ConnectivityManager.TYPE_MOBILE){//쓰리지나 LTE로 연결된것(모바일을 뜻한다.)
+                return TYPE_MOBILE;
+            }else if(type == ConnectivityManager.TYPE_WIFI){//와이파이 연결된것
+                return TYPE_WIFI;
+            }
+        }
+        return TYPE_NOT_CONNECTED;  //연결이 되지않은 상태
     }
 }
