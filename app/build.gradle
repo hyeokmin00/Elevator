@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdk 31
-
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.elevator"
         minSdk 21
         targetSdk 31
         versionCode 1
         versionName "1.0"
-
+        targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,10 +25,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    compileSdkVersion 25
+
 }
 
 dependencies {
+
+    implementation "com.android.support:appcompat-v7:25.4.0"
 
     //lottie-animation - https://github.com/LottieFiles/lottie-android
     def lottieVersion = "4.2.2"

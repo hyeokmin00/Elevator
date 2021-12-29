@@ -5,7 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PatternMatcher;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,11 +72,57 @@ public class SocketActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
 
-        ConnectionMgr cmg = new ConnectionMgr(context);
+        int status = NetworkStatus.getConnectivityStatus(getApplicationContext());
+        if (status == NetworkStatus.TYPE_WIFI){
+            startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+            Toast.makeText(this, "와이파이 연결을 해제해주세요.", Toast.LENGTH_LONG).show();
+        }
+
+
         if (!wifiStat) {
+            if (status != NetworkStatus.TYPE_WIFI){
+                startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+                Toast.makeText(this, "와이파이를 연결해주세요.", Toast.LENGTH_LONG).show();
+            }
+
+            //enableWifi()
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            try {
+                if (!wifiManager.isWifiEnabled()) {
+                    wifiManager.setWifiEnabled(true);
+                }
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                    WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
+                    builder.setSsidPattern(new PatternMatcher("CarKey",PatternMatcher.PATTERN_PREFIX));
+                    builder.setWpa2Passphrase("1234qqqq");
+
+                    WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
+
+                    final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
+                    networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+                    networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
+
+                    NetworkRequest networkRequest = networkRequestBuilder.build();
+
+                    connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+                    connectivityManager.requestNetwork(networkRequest, networkCallback);
 
 
-            cmg.enableWifi();
+                } else {
+                    WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                    wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_WiFi11"); // 연결하고자 하는 SSID
+                    wifiConfiguration.preSharedKey = String.format("\"%s\"", "1234qqqq"); // 비밀번호
+                    int wifiId = wifiManager.addNetwork(wifiConfiguration);
+                    wifiManager.enableNetwork(wifiId, true);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
             try {
@@ -88,7 +144,32 @@ public class SocketActivity extends AppCompatActivity {
 
                 JSONObject Data = sarThread.getResult();
 
-                cmg.disableWifi();
+                // disableWifi();
+                try {
+                    if (wifiManager.isWifiEnabled()) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                            connectivityManager.unregisterNetworkCallback(networkCallback);
+
+                        } else {
+                            if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
+
+                            } else {
+                                int networkId = wifiManager.getConnectionInfo().getNetworkId();
+                                wifiManager.removeNetwork(networkId);
+                                wifiManager.saveConfiguration();
+                                wifiManager.disconnect();
+                            }
+                        }
+
+                    } else
+                        Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
+                }
 
 
        /*
@@ -112,6 +193,7 @@ public class SocketActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
 
 
         Intent intent2 = new Intent(context, WriteReportActivity.class);
@@ -154,5 +236,26 @@ public class SocketActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+}
+
+class NetworkStatus {
+    public static final int TYPE_WIFI = 1;
+    public static final int TYPE_MOBILE = 2;
+    public static final int TYPE_NOT_CONNECTED = 3;
+
+    public static int getConnectivityStatus(Context context){ //해당 context의 서비스를 사용하기위해서 context객체를 받는다.
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if(networkInfo != null){
+            int type = networkInfo.getType();
+            if(type == ConnectivityManager.TYPE_MOBILE){//쓰리지나 LTE로 연결된것(모바일을 뜻한다.)
+                return TYPE_MOBILE;
+            }else if(type == ConnectivityManager.TYPE_WIFI){//와이파이 연결된것
+                return TYPE_WIFI;
+            }
+        }
+        return TYPE_NOT_CONNECTED;  //연결이 되지않은 상태
     }
 }

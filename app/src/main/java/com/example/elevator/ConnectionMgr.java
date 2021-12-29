@@ -3,7 +3,11 @@ package com.example.elevator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
