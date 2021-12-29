@@ -24,15 +24,16 @@ class ThreadSendAndRecieve implements Runnable {
     private JSONObject giveObj;
     private SockClient sc = new SockClient();
 
-    public ThreadSendAndRecieve(JSONObject getObj){
+    public ThreadSendAndRecieve(JSONObject getObj) {
         this.getObj = getObj;
     }
 
     @Override
-    public void run(){
+    public void run() {
         giveObj = sc.send_And_recv(getObj);
     }
-    public JSONObject getResult(){
+
+    public JSONObject getResult() {
         return giveObj;
     }
 }
@@ -46,13 +47,13 @@ class SockClient {
     JSONObject obj = new JSONObject();
     JSONArray objArray = new JSONArray();
 
-
-    final int port = 70; // 포트
-    final String serverIp = "192.168.35.225"; // 주소
     /*
+      final int port = 70; // 포트
+      final String serverIp = "192.168.35.225"; // 주소
+          */
     final int port = 5000;
-    final String serverIp = "192.168.5.5";     -> 기계 연결 시 사용
-    */
+    final String serverIp = "192.168.5.5";     //-> 기계 연결 시 사용
+
     JSONObject recvObj = new JSONObject();
     JSONArray recvObjArray = new JSONArray();
 
@@ -126,8 +127,8 @@ class SockClient {
                 errorcode |= ((short) recvBuffer[errorcode_index] << 8) & 0xFF00;
                 errorcode |= ((short) recvBuffer[errorcode_index - 1]) & 0x00FF;
 
-                recvSize = recvSize - ((126 - errorcode) * 8) - 2;
-               // recvSize = recvSize - ((125 - errorcode) * 8 ) - 10; -> 기계 연결 시 사용
+                //    recvSize = recvSize - ((126 - errorcode) * 8) - 2;
+                recvSize = recvSize - ((125 - errorcode) * 8) - 10; //->기계 연결 시 사용
 
                 for (int i = start_datetime_index; i < recvSize; i = i + 8) {
                     for (int j = 0; j < 3; j++) {
@@ -169,8 +170,8 @@ class SockClient {
                     code = 0;
                 }
 
-                if (errorcode == 126) {
-                //  if (errorcode == 125) { -> 기계 연결 시 사용
+                //   if (errorcode == 126) {
+                if (errorcode == 125) { // -> 기계 연결 시 사용
                     is.read(recvBuffer);
                 } else {
                     is.close();

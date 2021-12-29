@@ -17,9 +17,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
 import android.os.PatternMatcher;
 import android.provider.Settings;
@@ -90,9 +94,24 @@ public class ConnectionMgr extends Activity {
         }
 
     }
+
+
+
     public void disableWifi() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        Log.d("Test","disableWifi");
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    connectivityManager.bindProcessToNetwork(network);
+                }
+            }
+        };
 
         try {
             if (wifiManager.isWifiEnabled()) {
@@ -100,6 +119,9 @@ public class ConnectionMgr extends Activity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                     connectivityManager.unregisterNetworkCallback(networkCallback);
+
+                    enableWifi();
+
 
                 } else {
                     if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
@@ -116,6 +138,7 @@ public class ConnectionMgr extends Activity {
                         } else{
                             Log.d("로그", "lte없음");
                         }
+                        enableWifi();
                     }
                 }
 
@@ -174,7 +197,6 @@ public class ConnectionMgr extends Activity {
         } else {
 
         }
-
         return permission;
     }
 
