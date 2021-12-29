@@ -77,7 +77,12 @@ public class SocketActivity extends AppCompatActivity {
             Toast.makeText(this, "와이파이 연결을 해제해주세요.", Toast.LENGTH_LONG).show();
         }
 
+
         if (!wifiStat) {
+            if (status != NetworkStatus.TYPE_WIFI){
+                startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+                Toast.makeText(this, "와이파이를 연결해주세요.", Toast.LENGTH_LONG).show();
+            }
 
             //enableWifi()
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
