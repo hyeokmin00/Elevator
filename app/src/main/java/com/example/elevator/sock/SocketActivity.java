@@ -5,7 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PatternMatcher;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,11 +70,49 @@ public class SocketActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
 
+        startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+
         ConnectionMgr cmg = new ConnectionMgr(context);
         if (!wifiStat) {
 
+            //enableWifi()
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            cmg.enableWifi();
+            try {
+                if (!wifiManager.isWifiEnabled()) {
+                    wifiManager.setWifiEnabled(true);
+                }
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                    WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
+                    builder.setSsidPattern(new PatternMatcher("CarKey",PatternMatcher.PATTERN_PREFIX));
+                    builder.setWpa2Passphrase("1234qqqq");
+
+                    WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
+
+                    final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
+                    networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+                    networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
+
+                    NetworkRequest networkRequest = networkRequestBuilder.build();
+
+                    connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+                    connectivityManager.requestNetwork(networkRequest, networkCallback);
+
+
+                } else {
+                    WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                    wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_WiFi11"); // 연결하고자 하는 SSID
+                    wifiConfiguration.preSharedKey = String.format("\"%s\"", "1234qqqq"); // 비밀번호
+                    int wifiId = wifiManager.addNetwork(wifiConfiguration);
+                    wifiManager.enableNetwork(wifiId, true);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
             try {
@@ -88,7 +134,32 @@ public class SocketActivity extends AppCompatActivity {
 
                 JSONObject Data = sarThread.getResult();
 
-                cmg.disableWifi();
+                // disableWifi();
+                try {
+                    if (wifiManager.isWifiEnabled()) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                            connectivityManager.unregisterNetworkCallback(networkCallback);
+
+                        } else {
+                            if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
+
+                            } else {
+                                int networkId = wifiManager.getConnectionInfo().getNetworkId();
+                                wifiManager.removeNetwork(networkId);
+                                wifiManager.saveConfiguration();
+                                wifiManager.disconnect();
+                            }
+                        }
+
+                    } else
+                        Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
+                }
 
 
        /*
@@ -112,6 +183,7 @@ public class SocketActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
 
 
         Intent intent2 = new Intent(context, WriteReportActivity.class);
