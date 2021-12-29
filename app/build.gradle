@@ -30,6 +30,7 @@ android {
 
 dependencies {
 
+    //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:25.4.0"
 
     //lottie-animation - https://github.com/LottieFiles/lottie-android

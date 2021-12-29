@@ -25,6 +25,7 @@ import com.example.elevator.sock.SocketActivity;
 import com.example.elevator.ui.main.MainActivity;
 import com.example.elevator.utils.NetStat;
 
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -70,7 +71,8 @@ public class SplashActivity extends AppCompatActivity {
         //최종 갱신일과 오늘 날짜가 동일한 경우 DB 갱신 없이 승강기 목록으로 이동
         if (date.equals(today)) {
             Log.d("Test", "date == today -> ");
-            context.startActivity(new Intent(context, MainActivity.class));
+            context.startActivity(new Intent(context, SocketActivity.class));
+          //  context.startActivity(new Intent(context, MainActivity.class));
             finish();
         } else {
             Log.d("Test", "mobile Stat == true");
@@ -78,7 +80,8 @@ public class SplashActivity extends AppCompatActivity {
             //날짜 기본 값 : 오늘 날짜
             apiController.UpdatedLiftList(context, date);
             putUpdatedDate(UPDATEDATE, sdf.format(dt));
-            context.startActivity(new Intent(context, MainActivity.class));
+            context.startActivity(new Intent(context, SocketActivity.class));
+           // context.startActivity(new Intent(context, MainActivity.class));
             finish();
 
         }
