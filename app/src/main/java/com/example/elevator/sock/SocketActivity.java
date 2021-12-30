@@ -47,7 +47,6 @@ public class SocketActivity extends AppCompatActivity {
 
     static final int PERMISSIONS_REQUEST = 0x0000001;
     private ConnectivityManager connectivityManager;
-    private ConnectivityManager.NetworkCallback networkCallback;
 
     APIController apiController = new APIController();
     Context context = this;
@@ -72,135 +71,139 @@ public class SocketActivity extends AppCompatActivity {
         ssidPattern = "CarKey";
         password = "1234qqqq";
 
-        int status = NetworkStatus.getConnectivityStatus(getApplicationContext());
+        int status = NetworkStatus.getConnectivityStatus(context);
         if (status == NetworkStatus.TYPE_WIFI){
             startActivity(new Intent(Settings.Panel.ACTION_WIFI));
             Toast.makeText(this, "와이파이 연결을 해제해주세요.", Toast.LENGTH_LONG).show();
+            while(true){
+                if (status != NetworkStatus.TYPE_WIFI){
+                    break;
+                }
+            }
         }
 
+        if (status != NetworkStatus.TYPE_WIFI) {
+            if (!wifiStat) {
 
-        if (!wifiStat) {
-            if (status != NetworkStatus.TYPE_WIFI){
-                startActivity(new Intent(Settings.Panel.ACTION_WIFI));
-                Toast.makeText(this, "와이파이를 연결해주세요.", Toast.LENGTH_LONG).show();
-            }
-
-            //enableWifi()
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            try {
-                if (!wifiManager.isWifiEnabled()) {
-                    wifiManager.setWifiEnabled(true);
+                if (status != NetworkStatus.TYPE_WIFI){
+                    startActivity(new Intent(Settings.Panel.ACTION_WIFI));
+                    Toast.makeText(this, "와이파이 연결을 해주세요.", Toast.LENGTH_LONG).show();
                 }
+                //enableWifi()
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                    WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
-                    builder.setSsidPattern(new PatternMatcher("CarKey",PatternMatcher.PATTERN_PREFIX));
-                    builder.setWpa2Passphrase("1234qqqq");
-
-                    WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
-
-                    final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
-                    networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-                    networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
-
-                    NetworkRequest networkRequest = networkRequestBuilder.build();
-
-                    connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
-                    connectivityManager.requestNetwork(networkRequest, networkCallback);
-
-
-                } else {
-                    WifiConfiguration wifiConfiguration = new WifiConfiguration();
-                    wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_WiFi11"); // 연결하고자 하는 SSID
-                    wifiConfiguration.preSharedKey = String.format("\"%s\"", "1234qqqq"); // 비밀번호
-                    int wifiId = wifiManager.addNetwork(wifiConfiguration);
-                    wifiManager.enableNetwork(wifiId, true);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            try {
-
-                JSONObject sendObj = new JSONObject();
-                sendObj.put("cmd", (byte) 0x21);
-                sendObj.put("length", (byte) 0x06);
-                sendObj.put("data", null);
-
-                ThreadSendAndRecieve sarThread = new ThreadSendAndRecieve(sendObj);
-                Thread thread = new Thread(sarThread);
-
-                thread.start();
                 try {
-                    thread.join();
+                    if (!wifiManager.isWifiEnabled()) {
+                        wifiManager.setWifiEnabled(true);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                        WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
+                        builder.setSsidPattern(new PatternMatcher("CarKey", PatternMatcher.PATTERN_PREFIX));
+                        builder.setWpa2Passphrase("1234qqqq");
+
+                        WifiNetworkSpecifier wifiNetworkSpecifier = builder.build();
+
+                        final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
+                        networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+                        networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier);
+
+                        NetworkRequest networkRequest = networkRequestBuilder.build();
+
+                        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+                        connectivityManager.requestNetwork(networkRequest, networkCallback);
+
+
+                    } else {
+                        WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                        wifiConfiguration.SSID = String.format("\"%s\"", "Carkey_WiFi11"); // 연결하고자 하는 SSID
+                        wifiConfiguration.preSharedKey = String.format("\"%s\"", "1234qqqq"); // 비밀번호
+                        int wifiId = wifiManager.addNetwork(wifiConfiguration);
+                        wifiManager.enableNetwork(wifiId, true);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                JSONObject Data = sarThread.getResult();
 
-                // disableWifi();
                 try {
-                    if (wifiManager.isWifiEnabled()) {
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    JSONObject sendObj = new JSONObject();
+                    sendObj.put("cmd", (byte) 0x21);
+                    sendObj.put("length", (byte) 0x06);
+                    sendObj.put("data", null);
 
-                            connectivityManager.unregisterNetworkCallback(networkCallback);
+                    ThreadSendAndRecieve sarThread = new ThreadSendAndRecieve(sendObj);
+                    Thread thread = new Thread(sarThread);
 
-                        } else {
-                            if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    JSONObject Data = sarThread.getResult();
+
+                    // disableWifi();
+                    try {
+                        if (wifiManager.isWifiEnabled()) {
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                                connectivityManager.unregisterNetworkCallback(networkCallback);
 
                             } else {
-                                int networkId = wifiManager.getConnectionInfo().getNetworkId();
-                                wifiManager.removeNetwork(networkId);
-                                wifiManager.saveConfiguration();
-                                wifiManager.disconnect();
+                                if (wifiManager.getConnectionInfo().getNetworkId() == -1) {
+
+                                } else {
+                                    int networkId = wifiManager.getConnectionInfo().getNetworkId();
+                                    wifiManager.removeNetwork(networkId);
+                                    wifiManager.saveConfiguration();
+                                    wifiManager.disconnect();
+                                }
                             }
-                        }
 
-                    } else
-                        Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(getApplicationContext(), "Wifi 꺼짐", Toast.LENGTH_SHORT).show();
 
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+
+           /*
+            jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
+            ErrorResult errorResult;
+                    String lift_id = "1234572";
+                    ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
+                    String errCode = "128";
+                    String datetime = "2021-11-18 21:21:01";
+
+                    lift_errors.add(new LiftError(Integer.parseInt(errCode), datetime));
+                    errorResult = new ErrorResult(Integer.parseInt(lift_id), lift_errors);
+
+                    if (networkCallback == true) {
+                        apiController.setRetrofitInit();
+                        apiController.ErrorPost(errorResult);
+                        apiController return값이 200 인 경우 화면전환
+                    } */
+                    Log.d("Test", Data.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "연결 해제 예외 : " + e.toString(), Toast.LENGTH_SHORT).show();
                 }
-
-
-       /*
-        jsonObject ErrorPost = JSONObject ErrorPost 맞게 형변환
-        ErrorResult errorResult;
-                String lift_id = "1234572";
-                ArrayList<LiftError> lift_errors = new ArrayList<LiftError>();
-                String errCode = "128";
-                String datetime = "2021-11-18 21:21:01";
-
-                lift_errors.add(new LiftError(Integer.parseInt(errCode), datetime));
-                errorResult = new ErrorResult(Integer.parseInt(lift_id), lift_errors);
-
-                if (networkCallback == true) {
-                    apiController.setRetrofitInit();
-                    apiController.ErrorPost(errorResult);
-                    apiController return값이 200 인 경우 화면전환
-                } */
-                Log.d("Test", Data.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+
+            Intent intent2 = new Intent(context, WriteReportActivity.class);
+            intent2.putExtra("lift_id", liftId);
+            context.startActivity(intent2);
+            finish();
         }
-
-
-
-        Intent intent2 = new Intent(context, WriteReportActivity.class);
-        intent2.putExtra("lift_id", liftId);
-        context.startActivity(intent2);
-        finish();
-
 
     }
 
@@ -237,6 +240,20 @@ public class SocketActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    public ConnectivityManager.NetworkCallback networkCallback =
+            new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(@NonNull Network network) {
+                    super.onAvailable(network);
+                    Log.e("onAvailable", "WI-FI 연결");
+                }
+                public void onLost(@NonNull Network network) {
+                    super.onAvailable(network);
+                    Log.e("onLost", "WI-FI 연결 끊김");
+
+                }
+            };
 }
 
 class NetworkStatus {
